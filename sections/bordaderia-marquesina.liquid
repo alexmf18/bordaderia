@@ -1,0 +1,275 @@
+{%- comment -%}
+  ============================================================
+  BORDADERÍA · Banner marquesina (texto en movimiento)
+  Bucle infinito real: el texto se clona varias veces para que
+  nunca aparezca un hueco vacío, por ancha que sea la pantalla.
+  ============================================================
+{%- endcomment -%}
+
+{%- liquid
+  assign mensajes = section.settings.mensajes | split: '|'
+  # Número de copias de la tira. La animación desplaza exactamente
+  # una copia, así que el salto es invisible y el texto nunca se corta.
+  assign copias = 8
+  assign desplazamiento = 100.0 | divided_by: copias
+-%}
+
+{%- capture grupo -%}
+  {%- for mensaje in mensajes -%}
+    <span class="brd-mq__item">{{ mensaje | strip | escape }}</span>
+    <span class="brd-mq__sep" aria-hidden="true">{{ section.settings.separador | escape }}</span>
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} .brd-mq {
+    --mq-fondo: {{ section.settings.bg_color }};
+    --mq-color: {{ section.settings.text_color }};
+    --mq-sep-color: {{ section.settings.sep_color }};
+    --mq-alto: {{ section.settings.altura }}px;
+    --mq-fuente: {{ section.settings.font_size }}px;
+    --mq-tracking: {{ section.settings.tracking }}em;
+    --mq-velocidad: {{ section.settings.velocidad }}s;
+    --mq-espacio: {{ section.settings.espacio }}px;
+    --mq-desplazamiento: -{{ desplazamiento }}%;
+  }
+{%- endstyle -%}
+
+<div class="brd-mq" aria-label="{{ section.settings.mensajes | replace: '|', ', ' | escape }}">
+  <div class="brd-mq__track brd-mq__track--{{ section.settings.direccion }}">
+    {%- for i in (1..copias) -%}
+      <div class="brd-mq__grupo" {% unless forloop.first %}aria-hidden="true"{% endunless %}>{{ grupo }}</div>
+    {%- endfor -%}
+  </div>
+</div>
+
+<style>
+  /* Quita el espacio que el tema añade alrededor de la sección */
+  #shopify-section-{{ section.id }} {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  #shopify-section-{{ section.id }} .brd-mq,
+  #shopify-section-{{ section.id }} .brd-mq * {
+    box-sizing: border-box;
+  }
+
+  #shopify-section-{{ section.id }} .brd-mq {
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+
+    /* Ancho completo aunque el tema envuelva la sección */
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+
+    min-height: var(--mq-alto);
+    background-color: var(--mq-fondo);
+    user-select: none;
+  }
+
+  #shopify-section-{{ section.id }} .brd-mq__track {
+    display: flex;
+    flex-wrap: nowrap;
+    width: max-content;
+    will-change: transform;
+  }
+
+  #shopify-section-{{ section.id }} .brd-mq__track--izquierda {
+    animation: brd-mq-izq-{{ section.id }} var(--mq-velocidad) linear infinite;
+  }
+
+  #shopify-section-{{ section.id }} .brd-mq__track--derecha {
+    animation: brd-mq-der-{{ section.id }} var(--mq-velocidad) linear infinite;
+  }
+
+  {%- if section.settings.pausa_hover -%}
+    #shopify-section-{{ section.id }} .brd-mq:hover .brd-mq__track {
+      animation-play-state: paused;
+    }
+  {%- endif -%}
+
+  #shopify-section-{{ section.id }} .brd-mq__grupo {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+  }
+
+  #shopify-section-{{ section.id }} .brd-mq__item,
+  #shopify-section-{{ section.id }} .brd-mq__sep {
+    font-family: inherit;
+    font-size: var(--mq-fuente);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: var(--mq-tracking);
+    text-transform: uppercase;
+    white-space: nowrap;
+    padding: 0 calc(var(--mq-espacio) / 2);
+  }
+
+  #shopify-section-{{ section.id }} .brd-mq__item {
+    color: var(--mq-color);
+  }
+
+  #shopify-section-{{ section.id }} .brd-mq__sep {
+    color: var(--mq-sep-color);
+  }
+
+  /* Se desplaza exactamente el ancho de una copia: el reinicio no se ve */
+  @keyframes brd-mq-izq-{{ section.id }} {
+    from { transform: translate3d(0, 0, 0); }
+    to   { transform: translate3d(var(--mq-desplazamiento), 0, 0); }
+  }
+
+  @keyframes brd-mq-der-{{ section.id }} {
+    from { transform: translate3d(var(--mq-desplazamiento), 0, 0); }
+    to   { transform: translate3d(0, 0, 0); }
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .brd-mq {
+      --mq-alto: {{ section.settings.altura | times: 0.85 | round: 0 }}px;
+      --mq-fuente: {{ section.settings.font_size | minus: 1 }}px;
+      --mq-espacio: {{ section.settings.espacio | times: 0.75 | round: 0 }}px;
+      --mq-velocidad: {{ section.settings.velocidad | times: 0.7 | round: 0 }}s;
+    }
+  }
+
+  /* Accesibilidad: sin movimiento para quien lo tenga desactivado */
+  @media (prefers-reduced-motion: reduce) {
+    #shopify-section-{{ section.id }} .brd-mq {
+      overflow-x: auto;
+    }
+
+    #shopify-section-{{ section.id }} .brd-mq__track {
+      animation: none;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Marquesina",
+  "tag": "section",
+  "class": "brd-mq-section",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "mensajes",
+      "label": "Mensajes",
+      "info": "Sepáralos con la barra vertical |",
+      "default": "Diseños exclusivos|Bordados personalizados|Envíos a todo el país|Calidad premium"
+    },
+    {
+      "type": "text",
+      "id": "separador",
+      "label": "Separador",
+      "default": "·"
+    },
+    {
+      "type": "select",
+      "id": "direccion",
+      "label": "Dirección",
+      "options": [
+        { "value": "izquierda", "label": "Hacia la izquierda" },
+        { "value": "derecha", "label": "Hacia la derecha" }
+      ],
+      "default": "izquierda"
+    },
+    {
+      "type": "range",
+      "id": "velocidad",
+      "min": 10,
+      "max": 80,
+      "step": 2,
+      "unit": "s",
+      "label": "Velocidad",
+      "info": "Más segundos = más lento.",
+      "default": 34
+    },
+    {
+      "type": "checkbox",
+      "id": "pausa_hover",
+      "label": "Pausar al pasar el cursor",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Diseño"
+    },
+    {
+      "type": "range",
+      "id": "altura",
+      "min": 28,
+      "max": 90,
+      "step": 2,
+      "unit": "px",
+      "label": "Altura de la banda",
+      "default": 46
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "min": 9,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamaño del texto",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "tracking",
+      "min": 0,
+      "max": 0.3,
+      "step": 0.02,
+      "unit": "em",
+      "label": "Espaciado entre letras",
+      "default": 0.16
+    },
+    {
+      "type": "range",
+      "id": "espacio",
+      "min": 10,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Separación entre mensajes",
+      "default": 26
+    },
+    {
+      "type": "header",
+      "content": "Colores"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Fondo",
+      "default": "#EFEDED"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Texto",
+      "default": "#6C63E8"
+    },
+    {
+      "type": "color",
+      "id": "sep_color",
+      "label": "Separador",
+      "default": "#6C63E8"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Marquesina"
+    }
+  ]
+}
+{% endschema %}

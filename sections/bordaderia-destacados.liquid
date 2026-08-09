@@ -1,0 +1,577 @@
+{%- comment -%}
+  ============================================================
+  BORDADERÍA · Colección destacada (5 artículos)
+  Sección de tema real: aparece en Personalizar → Añadir sección.
+  El comerciante añade hasta 5 bloques "Producto" y elige cada uno.
+  ============================================================
+{%- endcomment -%}
+
+{%- liquid
+  # Convertimos la proporción "ancho/alto" en un porcentaje de relleno.
+  # Así la caja mide exactamente lo mismo en las 5 tarjetas, sin depender
+  # del tamaño original de cada foto.
+  assign partes = section.settings.image_ratio | split: '/'
+  assign ratio_w = partes[0] | plus: 0.0
+  assign ratio_h = partes[1] | plus: 0.0
+  if ratio_w <= 0 or ratio_h <= 0
+    assign ratio_w = 1.0
+    assign ratio_h = 1.0
+  endif
+  assign ratio_pct = ratio_h | times: 100.0 | divided_by: ratio_w
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    --brd-fp-bg: {{ section.settings.bg_color }};
+    --brd-fp-label: {{ section.settings.label_color }};
+    --brd-fp-title: {{ section.settings.title_color }};
+    --brd-fp-price: {{ section.settings.price_color }};
+    --brd-fp-gap: {{ section.settings.gap }}px;
+    --brd-fp-radius: {{ section.settings.image_radius }}px;
+    --brd-fp-pad: {{ ratio_pct }}%;
+    --brd-fp-fit: {{ section.settings.image_fit }};
+    --brd-fp-media-bg: {{ section.settings.media_bg }};
+    --brd-fp-cols: {{ section.blocks.size | at_least: 1 | at_most: 5 }};
+    --brd-fp-cols-mobile: {{ section.settings.columns_mobile }};
+    --brd-fp-max: {{ section.settings.max_width }}px;
+    --brd-fp-text: {{ section.settings.text_size }}px;
+  }
+
+  .brd-fp {
+    box-sizing: border-box;
+    background: var(--brd-fp-bg);
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .brd-fp {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<section class="brd-fp">
+  <div class="brd-fp__inner page-width">
+    {%- if section.settings.label != blank -%}
+      <p class="brd-fp__label">{{ section.settings.label | escape }}</p>
+    {%- endif -%}
+
+    {%- if section.settings.heading != blank -%}
+      <h2 class="brd-fp__heading">{{ section.settings.heading | escape }}</h2>
+    {%- endif -%}
+
+    <ul class="brd-fp__grid" role="list">
+      {%- for block in section.blocks -%}
+        {%- assign producto = block.settings.product -%}
+        <li class="brd-fp__item" {{ block.shopify_attributes }}>
+          {%- if producto != blank -%}
+            {%- liquid
+              # Encuadre: si el bloque dice "auto" usamos el punto focal
+              # que tenga la imagen en el admin de Shopify.
+              assign foco = block.settings.image_position
+              if foco == 'auto'
+                assign foco = producto.featured_image.presentation.focal_point | default: 'center center'
+              endif
+
+              assign foco_alt = block.settings.image_position
+              if foco_alt == 'auto'
+                assign foco_alt = producto.images[1].presentation.focal_point | default: 'center center'
+              endif
+
+              assign zoom_pct = block.settings.image_zoom | default: 100
+              assign zoom = zoom_pct | divided_by: 100.0
+
+              assign fit = section.settings.image_fit | default: 'cover'
+              assign fit_bloque = block.settings.image_fit | default: 'inherit'
+              unless fit_bloque == 'inherit'
+                assign fit = fit_bloque
+              endunless
+
+              capture img_style
+                echo 'object-fit:' | append: fit | append: ';'
+                echo 'object-position:' | append: foco | append: ';'
+                if zoom_pct != 100
+                  echo 'transform:scale(' | append: zoom | append: ');'
+                  echo 'transform-origin:' | append: foco | append: ';'
+                endif
+              endcapture
+
+              capture img_alt_style
+                echo 'object-fit:' | append: fit | append: ';'
+                echo 'object-position:' | append: foco_alt | append: ';'
+                if zoom_pct != 100
+                  echo 'transform:scale(' | append: zoom | append: ');'
+                  echo 'transform-origin:' | append: foco_alt | append: ';'
+                endif
+              endcapture
+            -%}
+            <a class="brd-fp__card" href="{{ producto.url }}">
+              <div class="brd-fp__media">
+                {%- if producto.featured_image -%}
+                  <img
+                    style="{{ img_style }}"
+                    class="brd-fp__img"
+                    src="{{ producto.featured_image | image_url: width: 720 }}"
+                    srcset="
+                      {{ producto.featured_image | image_url: width: 360 }} 360w,
+                      {{ producto.featured_image | image_url: width: 540 }} 540w,
+                      {{ producto.featured_image | image_url: width: 720 }} 720w
+                    "
+                    sizes="(min-width: 990px) 18vw, (min-width: 750px) 30vw, 45vw"
+                    alt="{{ producto.featured_image.alt | escape }}"
+                    width="{{ producto.featured_image.width }}"
+                    height="{{ producto.featured_image.height }}"
+                    loading="lazy"
+                  >
+                  {%- if section.settings.show_secondary_image and producto.images[1] != blank -%}
+                    <img
+                      style="{{ img_alt_style }}"
+                      class="brd-fp__img brd-fp__img--alt"
+                      src="{{ producto.images[1] | image_url: width: 720 }}"
+                      srcset="
+                        {{ producto.images[1] | image_url: width: 360 }} 360w,
+                        {{ producto.images[1] | image_url: width: 540 }} 540w,
+                        {{ producto.images[1] | image_url: width: 720 }} 720w
+                      "
+                      sizes="(min-width: 990px) 18vw, (min-width: 750px) 30vw, 45vw"
+                      alt=""
+                      aria-hidden="true"
+                      width="{{ producto.images[1].width }}"
+                      height="{{ producto.images[1].height }}"
+                      loading="lazy"
+                    >
+                  {%- endif -%}
+                {%- else -%}
+                  {{ 'product-apparel-1' | placeholder_svg_tag: 'brd-fp__placeholder' }}
+                {%- endif -%}
+              </div>
+
+              <div class="brd-fp__info">
+                <h3 class="brd-fp__title">{{ producto.title | escape }}</h3>
+                <p class="brd-fp__price">
+                  {%- if producto.price_varies -%}
+                    Desde {{ producto.price_min | money }}
+                  {%- else -%}
+                    {{ producto.price | money }}
+                  {%- endif -%}
+                </p>
+              </div>
+            </a>
+          {%- else -%}
+            {%- comment -%} Bloque sin producto: marcador visible solo como guía {%- endcomment -%}
+            <div class="brd-fp__card brd-fp__card--empty">
+              <div class="brd-fp__media">
+                {{ 'product-apparel-1' | placeholder_svg_tag: 'brd-fp__placeholder' }}
+              </div>
+              <div class="brd-fp__info">
+                <h3 class="brd-fp__title">Nombre del producto</h3>
+                <p class="brd-fp__price">{{ 2500 | money }}</p>
+              </div>
+            </div>
+          {%- endif -%}
+        </li>
+      {%- else -%}
+        {%- for i in (1..5) -%}
+          <li class="brd-fp__item">
+            <div class="brd-fp__card brd-fp__card--empty">
+              <div class="brd-fp__media">
+                {{ 'product-apparel-1' | placeholder_svg_tag: 'brd-fp__placeholder' }}
+              </div>
+              <div class="brd-fp__info">
+                <h3 class="brd-fp__title">Producto de ejemplo</h3>
+                <p class="brd-fp__price">{{ 2500 | money }}</p>
+              </div>
+            </div>
+          </li>
+        {%- endfor -%}
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+<style>
+  #shopify-section-{{ section.id }} .brd-fp,
+  #shopify-section-{{ section.id }} .brd-fp *,
+  #shopify-section-{{ section.id }} .brd-fp *::before,
+  #shopify-section-{{ section.id }} .brd-fp *::after {
+    box-sizing: border-box;
+  }
+
+  #shopify-section-{{ section.id }} .brd-fp__inner {
+    max-width: var(--brd-fp-max);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #shopify-section-{{ section.id }} .brd-fp__label {
+    margin: 0 0 6px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brd-fp-label);
+  }
+
+  #shopify-section-{{ section.id }} .brd-fp__heading {
+    margin: 0 0 8px;
+    text-align: center;
+    font-size: clamp(20px, 2.4vw, 30px);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--brd-fp-title);
+  }
+
+  #shopify-section-{{ section.id }} .brd-fp__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--brd-fp-cols), minmax(0, 1fr));
+    gap: var(--brd-fp-gap);
+    margin: 28px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  #shopify-section-{{ section.id }} .brd-fp__item {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  #shopify-section-{{ section.id }} .brd-fp__card {
+    display: block;
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  /* Caja de imagen: altura calculada con padding, idéntica en las 5 tarjetas
+     sea cual sea el tamaño original de cada foto. */
+  #shopify-section-{{ section.id }} .brd-fp__media {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 0;
+    padding-top: var(--brd-fp-pad);
+    overflow: hidden;
+    border-radius: var(--brd-fp-radius);
+    background: var(--brd-fp-media-bg);
+  }
+
+  #shopify-section-{{ section.id }} .brd-fp__img,
+  #shopify-section-{{ section.id }} .brd-fp__placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    max-width: none;
+    min-height: 0;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  #shopify-section-{{ section.id }} .brd-fp__img {
+    object-fit: var(--brd-fp-fit);
+    object-position: center center;
+  }
+
+  #shopify-section-{{ section.id }} .brd-fp__placeholder {
+    fill: #C9C9C9;
+    background: var(--brd-fp-media-bg);
+  }
+
+  #shopify-section-{{ section.id }} .brd-fp__img--alt {
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+
+  #shopify-section-{{ section.id }} .brd-fp__card:hover .brd-fp__img--alt,
+  #shopify-section-{{ section.id }} .brd-fp__card:focus-visible .brd-fp__img--alt {
+    opacity: 1;
+  }
+
+  #shopify-section-{{ section.id }} .brd-fp__info {
+    padding-top: 12px;
+  }
+
+  #shopify-section-{{ section.id }} .brd-fp__title {
+    margin: 0;
+    font-size: var(--brd-fp-text);
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: 0.01em;
+    color: var(--brd-fp-title);
+  }
+
+  #shopify-section-{{ section.id }} .brd-fp__price {
+    margin: 4px 0 0;
+    font-size: var(--brd-fp-text);
+    font-weight: 500;
+    color: var(--brd-fp-price);
+  }
+
+  @media screen and (max-width: 989px) {
+    #shopify-section-{{ section.id }} .brd-fp__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .brd-fp__grid {
+      grid-template-columns: repeat(var(--brd-fp-cols-mobile), minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #shopify-section-{{ section.id }} .brd-fp__img--alt {
+      transition: none;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Colección destacada",
+  "tag": "section",
+  "class": "brd-fp-section",
+  "max_blocks": 5,
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Etiqueta superior",
+      "default": "Colección destacada"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Título (opcional)",
+      "info": "Déjalo vacío para mostrar solo la etiqueta."
+    },
+    {
+      "type": "header",
+      "content": "Tarjetas"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_secondary_image",
+      "label": "Mostrar segunda imagen al pasar el cursor",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Proporción de la imagen",
+      "options": [
+        { "value": "1/1", "label": "Cuadrada (1:1)" },
+        { "value": "4/5", "label": "Vertical (4:5)" },
+        { "value": "3/4", "label": "Vertical (3:4)" },
+        { "value": "2/3", "label": "Vertical alta (2:3)" },
+        { "value": "4/3", "label": "Horizontal (4:3)" },
+        { "value": "16/9", "label": "Panorámica (16:9)" }
+      ],
+      "default": "1/1",
+      "info": "Todas las tarjetas usan la misma caja; las fotos se recortan o se ajustan según la opción de abajo."
+    },
+    {
+      "type": "select",
+      "id": "image_fit",
+      "label": "Ajuste de la foto",
+      "options": [
+        { "value": "cover", "label": "Recortar para llenar la caja" },
+        { "value": "contain", "label": "Mostrar la foto completa" }
+      ],
+      "default": "cover",
+      "info": "Usa \"Mostrar la foto completa\" si tus productos tienen fotos de proporciones muy distintas."
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Redondeo de la imagen",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "min": 8,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Separación entre tarjetas",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 900,
+      "max": 1800,
+      "step": 20,
+      "unit": "px",
+      "label": "Ancho de la cuadrícula",
+      "info": "Cuanto más ancho, más grandes son las 5 tarjetas.",
+      "default": 1440
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamaño del nombre y el precio",
+      "default": 15
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columnas en móvil",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "header",
+      "content": "Colores"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Fondo de la sección",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "media_bg",
+      "label": "Fondo de la caja de imagen",
+      "default": "#EDEDED"
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Etiqueta superior",
+      "default": "#6C63E8"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Título del producto",
+      "default": "#1B1B19"
+    },
+    {
+      "type": "color",
+      "id": "price_color",
+      "label": "Precio",
+      "default": "#6C63E8"
+    },
+    {
+      "type": "header",
+      "content": "Espaciado"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Espacio superior",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Espacio inferior",
+      "default": 48
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Producto",
+      "limit": 5,
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Producto"
+        },
+        {
+          "type": "header",
+          "content": "Encuadre de esta foto"
+        },
+        {
+          "type": "select",
+          "id": "image_position",
+          "label": "Zona visible de la foto",
+          "info": "Cambia qué parte de la foto se conserva al recortar. \"Automático\" usa el punto focal marcado en el admin.",
+          "options": [
+            { "value": "auto", "label": "Automático (punto focal)" },
+            { "value": "center top", "label": "Arriba" },
+            { "value": "center center", "label": "Centro" },
+            { "value": "center bottom", "label": "Abajo" },
+            { "value": "left center", "label": "Izquierda" },
+            { "value": "right center", "label": "Derecha" },
+            { "value": "left top", "label": "Arriba izquierda" },
+            { "value": "right top", "label": "Arriba derecha" },
+            { "value": "left bottom", "label": "Abajo izquierda" },
+            { "value": "right bottom", "label": "Abajo derecha" }
+          ],
+          "default": "auto"
+        },
+        {
+          "type": "range",
+          "id": "image_zoom",
+          "min": 100,
+          "max": 200,
+          "step": 5,
+          "unit": "%",
+          "label": "Zoom",
+          "default": 100
+        },
+        {
+          "type": "select",
+          "id": "image_fit",
+          "label": "Ajuste",
+          "options": [
+            { "value": "inherit", "label": "Como el resto de la sección" },
+            { "value": "cover", "label": "Recortar para llenar la caja" },
+            { "value": "contain", "label": "Mostrar la foto completa" }
+          ],
+          "default": "inherit"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Colección destacada (5 artículos)",
+      "blocks": [
+        { "type": "product" },
+        { "type": "product" },
+        { "type": "product" },
+        { "type": "product" },
+        { "type": "product" }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,444 @@
+{%- comment -%}
+  ============================================================
+  BORDADERÍA · Footer personalizado
+  Marca a la izquierda, enlaces en el centro y aviso legal
+  a la derecha. Los enlaces se añaden como bloques.
+  Para usarlo: Personalizar → sección Pie de página → Añadir
+  sección → Footer personalizado (y oculta el pie del tema).
+  ============================================================
+{%- endcomment -%}
+
+{%- liquid
+  assign anio = 'now' | date: '%Y'
+  assign aviso = section.settings.copyright_text
+  if section.settings.show_year
+    assign aviso = '© ' | append: anio | append: ' ' | append: section.settings.copyright_text
+  endif
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    --brd-ft-bg: {{ section.settings.bg_color }};
+    --brd-ft-brand: {{ section.settings.brand_color }};
+    --brd-ft-link: {{ section.settings.link_color }};
+    --brd-ft-link-hover: {{ section.settings.link_hover_color }};
+    --brd-ft-legal: {{ section.settings.legal_color }};
+    --brd-ft-border: {{ section.settings.border_color }};
+    --brd-ft-border-w: {{ section.settings.border_width }}px;
+    --brd-ft-brand-size: {{ section.settings.brand_size }}px;
+    --brd-ft-link-size: {{ section.settings.link_size }}px;
+    --brd-ft-legal-size: {{ section.settings.legal_size }}px;
+    --brd-ft-gap: {{ section.settings.link_gap }}px;
+    --brd-ft-max: {{ section.settings.max_width }}px;
+  }
+
+  .brd-ft {
+    box-sizing: border-box;
+    background: var(--brd-ft-bg);
+    border-top: var(--brd-ft-border-w) solid var(--brd-ft-border);
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .brd-ft {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<footer class="brd-ft">
+  <div class="brd-ft__inner page-width">
+    <div class="brd-ft__brand">
+      {%- if section.settings.logo != blank -%}
+        <a class="brd-ft__logo-link" href="{{ routes.root_url }}">
+          <img
+            class="brd-ft__logo"
+            src="{{ section.settings.logo | image_url: width: 600 }}"
+            srcset="
+              {{ section.settings.logo | image_url: width: 300 }} 300w,
+              {{ section.settings.logo | image_url: width: 600 }} 600w
+            "
+            sizes="{{ section.settings.logo_width }}px"
+            alt="{{ section.settings.logo.alt | default: shop.name | escape }}"
+            width="{{ section.settings.logo.width }}"
+            height="{{ section.settings.logo.height }}"
+            loading="lazy"
+          >
+        </a>
+      {%- else -%}
+        <a class="brd-ft__name" href="{{ routes.root_url }}">
+          {{- section.settings.brand | default: shop.name | escape -}}
+        </a>
+      {%- endif -%}
+    </div>
+
+    {%- if section.blocks.size > 0 -%}
+      <nav class="brd-ft__nav" aria-label="{{ section.settings.nav_label | escape }}">
+        <ul class="brd-ft__links" role="list">
+          {%- for block in section.blocks -%}
+            {%- if block.settings.label != blank -%}
+              <li {{ block.shopify_attributes }}>
+                <a class="brd-ft__link" href="{{ block.settings.link | default: '#' }}">
+                  {{- block.settings.label | escape -}}
+                </a>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+
+    {%- if aviso != blank -%}
+      <p class="brd-ft__legal">{{ aviso | escape }}</p>
+    {%- endif -%}
+  </div>
+</footer>
+
+<style>
+  #shopify-section-{{ section.id }} .brd-ft,
+  #shopify-section-{{ section.id }} .brd-ft *,
+  #shopify-section-{{ section.id }} .brd-ft *::before,
+  #shopify-section-{{ section.id }} .brd-ft *::after {
+    box-sizing: border-box;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ft__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    max-width: var(--brd-ft-max);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ft__brand {
+    flex: 0 0 auto;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ft__name {
+    font-size: var(--brd-ft-brand-size);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    line-height: 1.2;
+    color: var(--brd-ft-brand);
+    text-decoration: none;
+    {% if section.settings.brand_uppercase %}text-transform: uppercase;{% endif %}
+  }
+
+  #shopify-section-{{ section.id }} .brd-ft__logo-link {
+    display: block;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ft__logo {
+    display: block;
+    width: {{ section.settings.logo_width }}px;
+    height: auto;
+    max-width: 100%;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ft__nav {
+    flex: 1 1 auto;
+    display: flex;
+    justify-content: {{ section.settings.links_align }};
+  }
+
+  #shopify-section-{{ section.id }} .brd-ft__links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--brd-ft-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ft__link {
+    font-size: var(--brd-ft-link-size);
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--brd-ft-link);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ft__link:hover,
+  #shopify-section-{{ section.id }} .brd-ft__link:focus-visible {
+    color: var(--brd-ft-link-hover);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ft__legal {
+    flex: 0 0 auto;
+    margin: 0;
+    font-size: var(--brd-ft-legal-size);
+    line-height: 1.5;
+    color: var(--brd-ft-legal);
+  }
+
+  @media screen and (max-width: 989px) {
+    #shopify-section-{{ section.id }} .brd-ft__inner {
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      gap: 16px;
+    }
+
+    #shopify-section-{{ section.id }} .brd-ft__nav {
+      justify-content: center;
+    }
+
+    #shopify-section-{{ section.id }} .brd-ft__links {
+      justify-content: center;
+      gap: calc(var(--brd-ft-gap) * 0.8);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #shopify-section-{{ section.id }} .brd-ft__link {
+      transition: none;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Footer personalizado",
+  "tag": "footer",
+  "class": "brd-ft-section",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Marca"
+    },
+    {
+      "type": "text",
+      "id": "brand",
+      "label": "Nombre de la marca",
+      "info": "Si lo dejas vacío se usa el nombre de la tienda.",
+      "default": "Stitch & Glitch"
+    },
+    {
+      "type": "checkbox",
+      "id": "brand_uppercase",
+      "label": "Mostrarlo en mayúsculas",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "brand_size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamaño del nombre",
+      "default": 18
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logotipo",
+      "info": "Opcional. Si lo pones, sustituye al nombre."
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 60,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "label": "Ancho del logotipo",
+      "default": 140
+    },
+    {
+      "type": "header",
+      "content": "Enlaces"
+    },
+    {
+      "type": "select",
+      "id": "links_align",
+      "label": "Posición de los enlaces",
+      "options": [
+        { "value": "center", "label": "Centrados" },
+        { "value": "flex-start", "label": "Junto a la marca" },
+        { "value": "flex-end", "label": "Junto al aviso legal" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "link_gap",
+      "min": 10,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Separación entre enlaces",
+      "default": 26
+    },
+    {
+      "type": "range",
+      "id": "link_size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamaño de los enlaces",
+      "default": 13
+    },
+    {
+      "type": "text",
+      "id": "nav_label",
+      "label": "Nombre del menú para lectores de pantalla",
+      "default": "Enlaces del pie de página"
+    },
+    {
+      "type": "header",
+      "content": "Aviso legal"
+    },
+    {
+      "type": "text",
+      "id": "copyright_text",
+      "label": "Texto",
+      "default": "Stitch & Glitch. Bordado de precisión."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_year",
+      "label": "Añadir © y el año actual automáticamente",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "legal_size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamaño del texto",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Diseño"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 800,
+      "max": 1800,
+      "step": 20,
+      "unit": "px",
+      "label": "Ancho del contenido",
+      "default": 1440
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "label": "Grosor de la línea superior",
+      "default": 1
+    },
+    {
+      "type": "header",
+      "content": "Colores"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Fondo",
+      "default": "#F7F6F4"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Línea superior",
+      "default": "#E5E3DF"
+    },
+    {
+      "type": "color",
+      "id": "brand_color",
+      "label": "Nombre de la marca",
+      "default": "#1B1B19"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Enlaces",
+      "default": "#C08A2E"
+    },
+    {
+      "type": "color",
+      "id": "link_hover_color",
+      "label": "Enlaces al pasar el cursor",
+      "default": "#1A4EE0"
+    },
+    {
+      "type": "color",
+      "id": "legal_color",
+      "label": "Aviso legal",
+      "default": "#2E3A8C"
+    },
+    {
+      "type": "header",
+      "content": "Espaciado"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Espacio superior",
+      "default": 26
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Espacio inferior",
+      "default": 26
+    }
+  ],
+  "blocks": [
+    {
+      "type": "enlace",
+      "name": "Enlace",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Texto",
+          "default": "Enlace"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Destino"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer personalizado",
+      "blocks": [
+        { "type": "enlace", "settings": { "label": "Política de privacidad" } },
+        { "type": "enlace", "settings": { "label": "Términos del servicio" } },
+        { "type": "enlace", "settings": { "label": "Envíos" } },
+        { "type": "enlace", "settings": { "label": "Contacto" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

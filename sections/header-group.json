@@ -1,0 +1,75 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "name": "t:sections.header.name",
+  "type": "header",
+  "sections": {
+    "announcement-bar": {
+      "type": "announcement-bar",
+      "blocks": {
+        "announcement-bar-0": {
+          "type": "announcement",
+          "settings": {
+            "text": "Envios gratis en compras superirores a 50.00€",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "announcement-bar-0"
+      ],
+      "disabled": true,
+      "custom_css": [],
+      "settings": {
+        "auto_rotate": false,
+        "change_slides_speed": 5,
+        "color_scheme": "scheme-4",
+        "show_line_separator": true,
+        "show_social": false,
+        "enable_country_selector": false,
+        "enable_language_selector": false
+      }
+    },
+    "custom_liquid_9wbnW3": {
+      "type": "custom-liquid",
+      "name": "barra de anuncios personalizada",
+      "settings": {
+        "custom_liquid": "{%- assign anuncio_texto = 'Envíos gratis en compras superiores a €50.00' -%}\n{%- assign anuncio_link  = '' -%}\n{%- comment -%} Para hacerla clicable: anuncio_link = '/policies/shipping-policy' {%- endcomment -%}\n\n<div class=\"brd-anuncio\">\n  {%- if anuncio_link != blank -%}\n    <a class=\"brd-anuncio__texto brd-anuncio__texto--link\" href=\"{{ anuncio_link }}\">{{ anuncio_texto }}</a>\n  {%- else -%}\n    <p class=\"brd-anuncio__texto\">{{ anuncio_texto }}</p>\n  {%- endif -%}\n</div>\n\n<style>\n  .brd-anuncio {\n    /* ---------- ajustes rápidos ---------- */\n    --anuncio-fondo: #6C63E8;        /* morado de la barra */\n    --anuncio-color: #FFFFFF;        /* color del texto */\n    --anuncio-alto: 34px;\n    --anuncio-fuente: 11px;\n    --anuncio-tracking: 0.14em;\n    /* ------------------------------------- */\n\n    box-sizing: border-box;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n\n    /* ancho completo aunque el tema envuelva la sección */\n    width: 100vw;\n    max-width: 100vw;\n    margin-left: calc(50% - 50vw);\n    margin-right: calc(50% - 50vw);\n\n    min-height: var(--anuncio-alto);\n    padding: 6px 16px;\n    background-color: var(--anuncio-fondo);\n    text-align: center;\n  }\n\n  .brd-anuncio__texto {\n    margin: 0;\n    padding: 0;\n    font-family: inherit;\n    font-size: var(--anuncio-fuente);\n    font-weight: 500;\n    line-height: 1.4;\n    letter-spacing: var(--anuncio-tracking);\n    text-transform: uppercase;\n    color: var(--anuncio-color);\n  }\n\n  .brd-anuncio__texto--link {\n    text-decoration: none;\n    border-bottom: 1px solid transparent;\n    transition: border-color .2s ease;\n  }\n\n  .brd-anuncio__texto--link:hover {\n    border-bottom-color: currentColor;\n  }\n\n  @media screen and (max-width: 749px) {\n    .brd-anuncio {\n      --anuncio-fuente: 10px;\n      --anuncio-tracking: 0.10em;\n      padding: 7px 14px;\n    }\n  }\n</style>",
+        "color_scheme": "",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "logo_position": "middle-left",
+        "mobile_logo_position": "center",
+        "menu": "main-menu",
+        "menu_type_desktop": "dropdown",
+        "sticky_header_type": "on-scroll-up",
+        "show_line_separator": false,
+        "color_scheme": "scheme-1",
+        "menu_color_scheme": "scheme-1",
+        "enable_country_selector": true,
+        "enable_language_selector": true,
+        "enable_customer_avatar": true,
+        "margin_bottom": 0,
+        "padding_top": 12,
+        "padding_bottom": 12
+      }
+    }
+  },
+  "order": [
+    "announcement-bar",
+    "custom_liquid_9wbnW3",
+    "header"
+  ]
+}

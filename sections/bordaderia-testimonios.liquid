@@ -1,0 +1,493 @@
+{%- comment -%}
+  ============================================================
+  BORDADERÍA · Comentarios de clientes
+  Cada bloque es una reseña: estrellas, texto y nombre.
+  ============================================================
+{%- endcomment -%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    --brd-tm-bg: {{ section.settings.bg_color }};
+    --brd-tm-card-bg: {{ section.settings.card_bg }};
+    --brd-tm-border: {{ section.settings.card_border_color }};
+    --brd-tm-star: {{ section.settings.star_color }};
+    --brd-tm-star-off: {{ section.settings.star_off_color }};
+    --brd-tm-text: {{ section.settings.text_color }};
+    --brd-tm-author: {{ section.settings.author_color }};
+    --brd-tm-label: {{ section.settings.label_color }};
+    --brd-tm-heading: {{ section.settings.heading_color }};
+    --brd-tm-gap: {{ section.settings.gap }}px;
+    --brd-tm-radius: {{ section.settings.card_radius }}px;
+    --brd-tm-card-pad: {{ section.settings.card_padding }}px;
+    --brd-tm-cols: {{ section.settings.columns_desktop }};
+    --brd-tm-text-size: {{ section.settings.text_size }}px;
+    --brd-tm-max: {{ section.settings.max_width }}px;
+    --brd-tm-border-w: {{ section.settings.card_border_width }}px;
+  }
+
+  .brd-tm {
+    box-sizing: border-box;
+    background: var(--brd-tm-bg);
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .brd-tm {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+{%- capture estrella -%}
+  <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" focusable="false">
+    <path d="M10 1.6l2.47 5.27 5.53.72-4.06 3.9 1.03 5.68L10 14.5l-4.97 2.67 1.03-5.68L2 7.59l5.53-.72L10 1.6z"/>
+  </svg>
+{%- endcapture -%}
+
+<section class="brd-tm">
+  <div class="brd-tm__inner page-width">
+    {%- if section.settings.label != blank -%}
+      <p class="brd-tm__label">{{ section.settings.label | escape }}</p>
+    {%- endif -%}
+
+    {%- if section.settings.heading != blank -%}
+      <h2 class="brd-tm__heading">{{ section.settings.heading | escape }}</h2>
+    {%- endif -%}
+
+    <ul class="brd-tm__grid" role="list">
+      {%- for block in section.blocks -%}
+        {%- assign nota = block.settings.rating | plus: 0 -%}
+        <li class="brd-tm__item" {{ block.shopify_attributes }}>
+          <blockquote class="brd-tm__card">
+            {%- if section.settings.show_stars -%}
+              <div class="brd-tm__stars" role="img" aria-label="{{ nota }} de 5 estrellas">
+                {%- for i in (1..5) -%}
+                  {%- if i <= nota -%}
+                    <span class="brd-tm__star">{{ estrella }}</span>
+                  {%- elsif section.settings.show_empty_stars -%}
+                    <span class="brd-tm__star brd-tm__star--off">{{ estrella }}</span>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+
+            {%- if block.settings.text != blank -%}
+              <p class="brd-tm__text">{{ block.settings.text }}</p>
+            {%- endif -%}
+
+            {%- if block.settings.author != blank -%}
+              <footer class="brd-tm__author">
+                {%- if section.settings.show_dash -%}<span aria-hidden="true">—&nbsp;</span>{%- endif -%}
+                <cite class="brd-tm__name">{{ block.settings.author | escape }}</cite>
+                {%- if block.settings.meta != blank -%}
+                  <span class="brd-tm__meta">{{ block.settings.meta | escape }}</span>
+                {%- endif -%}
+              </footer>
+            {%- endif -%}
+          </blockquote>
+        </li>
+      {%- else -%}
+        {%- for i in (1..3) -%}
+          <li class="brd-tm__item">
+            <blockquote class="brd-tm__card">
+              <div class="brd-tm__stars" role="img" aria-label="5 de 5 estrellas">
+                {%- for j in (1..5) -%}
+                  <span class="brd-tm__star">{{ estrella }}</span>
+                {%- endfor -%}
+              </div>
+              <p class="brd-tm__text">"Escribe aquí el comentario de tu cliente. Un par de frases concretas funcionan mejor que un elogio genérico."</p>
+              <footer class="brd-tm__author">
+                <span aria-hidden="true">—&nbsp;</span><cite class="brd-tm__name">Nombre del cliente</cite>
+              </footer>
+            </blockquote>
+          </li>
+        {%- endfor -%}
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+<style>
+  #shopify-section-{{ section.id }} .brd-tm,
+  #shopify-section-{{ section.id }} .brd-tm *,
+  #shopify-section-{{ section.id }} .brd-tm *::before,
+  #shopify-section-{{ section.id }} .brd-tm *::after {
+    box-sizing: border-box;
+  }
+
+  #shopify-section-{{ section.id }} .brd-tm__inner {
+    max-width: var(--brd-tm-max);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #shopify-section-{{ section.id }} .brd-tm__label {
+    margin: 0 0 6px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brd-tm-label);
+  }
+
+  #shopify-section-{{ section.id }} .brd-tm__heading {
+    margin: 0;
+    text-align: center;
+    font-size: clamp(20px, 2.4vw, 30px);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--brd-tm-heading);
+  }
+
+  #shopify-section-{{ section.id }} .brd-tm__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--brd-tm-cols), minmax(0, 1fr));
+    gap: var(--brd-tm-gap);
+    margin: 28px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  #shopify-section-{{ section.id }} .brd-tm__item {
+    min-width: 0;
+    display: flex;
+  }
+
+  #shopify-section-{{ section.id }} .brd-tm__card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 0;
+    padding: var(--brd-tm-card-pad);
+    background: var(--brd-tm-card-bg);
+    border: var(--brd-tm-border-w) solid var(--brd-tm-border);
+    border-radius: var(--brd-tm-radius);
+  }
+
+  #shopify-section-{{ section.id }} .brd-tm__stars {
+    display: flex;
+    gap: 3px;
+    margin-bottom: 14px;
+    color: var(--brd-tm-star);
+  }
+
+  #shopify-section-{{ section.id }} .brd-tm__star {
+    display: block;
+    width: {{ section.settings.star_size }}px;
+    height: {{ section.settings.star_size }}px;
+  }
+
+  #shopify-section-{{ section.id }} .brd-tm__star svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  #shopify-section-{{ section.id }} .brd-tm__star--off {
+    color: var(--brd-tm-star-off);
+  }
+
+  #shopify-section-{{ section.id }} .brd-tm__text {
+    margin: 0;
+    font-size: var(--brd-tm-text-size);
+    line-height: 1.65;
+    color: var(--brd-tm-text);
+  }
+
+  #shopify-section-{{ section.id }} .brd-tm__author {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: auto;
+    padding-top: 18px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--brd-tm-author);
+  }
+
+  #shopify-section-{{ section.id }} .brd-tm__name {
+    font-style: normal;
+  }
+
+  #shopify-section-{{ section.id }} .brd-tm__meta {
+    opacity: 0.7;
+    letter-spacing: 0.06em;
+    text-transform: none;
+  }
+
+  @media screen and (max-width: 989px) {
+    #shopify-section-{{ section.id }} .brd-tm__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .brd-tm__grid {
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-top: 20px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Comentarios de clientes",
+  "tag": "section",
+  "class": "brd-tm-section",
+  "max_blocks": 9,
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Etiqueta superior",
+      "info": "Opcional. Ej.: \"Lo que dicen nuestros clientes\"."
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Título",
+      "info": "Opcional."
+    },
+    {
+      "type": "header",
+      "content": "Estrellas"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stars",
+      "label": "Mostrar estrellas",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_empty_stars",
+      "label": "Mostrar también las estrellas vacías",
+      "info": "Si lo desactivas, una reseña de 4 estrellas muestra solo 4.",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "star_size",
+      "min": 10,
+      "max": 26,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamaño de las estrellas",
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Tarjetas"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "label": "Columnas en escritorio",
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "card_padding",
+      "min": 12,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Relleno interior",
+      "default": 26
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Redondeo",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "card_border_width",
+      "min": 0,
+      "max": 3,
+      "step": 1,
+      "unit": "px",
+      "label": "Grosor del borde",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "min": 8,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Separación entre tarjetas",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "min": 11,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamaño del comentario",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 800,
+      "max": 1800,
+      "step": 20,
+      "unit": "px",
+      "label": "Ancho del bloque",
+      "default": 1440
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dash",
+      "label": "Mostrar la raya antes del nombre",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Colores"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Fondo de la sección",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "card_bg",
+      "label": "Fondo de la tarjeta",
+      "default": "#F7F6F4"
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Borde de la tarjeta",
+      "default": "#E5E3DF"
+    },
+    {
+      "type": "color",
+      "id": "star_color",
+      "label": "Estrellas",
+      "default": "#1A4EE0"
+    },
+    {
+      "type": "color",
+      "id": "star_off_color",
+      "label": "Estrellas vacías",
+      "default": "#D6D6D6"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Texto del comentario",
+      "default": "#6C63E8"
+    },
+    {
+      "type": "color",
+      "id": "author_color",
+      "label": "Nombre del cliente",
+      "default": "#1B1B19"
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Etiqueta superior",
+      "default": "#6C63E8"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Título",
+      "default": "#1B1B19"
+    },
+    {
+      "type": "header",
+      "content": "Espaciado"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Espacio superior",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Espacio inferior",
+      "default": 56
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonio",
+      "name": "Comentario",
+      "settings": [
+        {
+          "type": "range",
+          "id": "rating",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "label": "Estrellas",
+          "default": 5
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Comentario",
+          "default": "\"La precisión del bordado es increíble. Los detalles más pequeños de mi diseño personalizado quedaron perfectos.\""
+        },
+        {
+          "type": "text",
+          "id": "author",
+          "label": "Nombre del cliente",
+          "default": "Andrés M."
+        },
+        {
+          "type": "text",
+          "id": "meta",
+          "label": "Detalle",
+          "info": "Opcional. Ej.: \"Compra verificada\" o la ciudad."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Comentarios de clientes",
+      "blocks": [
+        { "type": "testimonio" },
+        { "type": "testimonio" },
+        { "type": "testimonio" }
+      ]
+    }
+  ]
+}
+{% endschema %}

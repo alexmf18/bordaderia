@@ -1,0 +1,117 @@
+{%- comment -%}
+  ============================================================
+  BORDADERÍA · Banner marquesina (texto en movimiento)
+  Pegar en: Personalizar tema → Añadir sección → Liquid personalizado
+  Edita los mensajes en la variable "mensajes" (separados por |).
+  El resto se ajusta en las variables CSS del bloque <style>.
+
+  CORREGIDO: el texto ya no se corta. Antes había 2 copias y la
+  animación desplazaba el 50% del carril; si una copia era más
+  estrecha que la pantalla quedaba un hueco vacío. Ahora hay 8
+  copias y la animación desplaza exactamente 1 copia (12.5%).
+  ============================================================
+{%- endcomment -%}
+{%- assign mensajes = 'Diseños exclusivos|Bordados personalizados|Envíos a todo el país|Calidad premium' | split: '|' -%}
+{%- capture grupo -%}
+  {%- for mensaje in mensajes -%}
+    <span class="brd-mq__item">{{ mensaje | strip }}</span>
+    <span class="brd-mq__sep" aria-hidden="true">&middot;</span>
+  {%- endfor -%}
+{%- endcapture -%}
+<div class="brd-mq" role="marquee" aria-label="Ventajas de comprar en Bordadería">
+  <div class="brd-mq__track">
+    <div class="brd-mq__grupo">{{ grupo }}</div>
+    {%- for i in (2..8) -%}
+      <div class="brd-mq__grupo" aria-hidden="true">{{ grupo }}</div>
+    {%- endfor -%}
+  </div>
+</div>
+<style>
+  /* --- quita el espacio que el tema añade alrededor de la sección --- */
+  .shopify-section:has(.brd-mq) {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+  .shopify-section:has(.brd-mq) > *:not(.brd-mq) {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+  .brd-mq {
+    /* ---------- ajustes rápidos ---------- */
+    --mq-fondo: #EFEDED;        /* fondo de la banda */
+    --mq-color: #6C63E8;        /* color del texto */
+    --mq-sep-color: #6C63E8;    /* color de los puntos separadores */
+    --mq-alto: 46px;
+    --mq-fuente: 12px;
+    --mq-tracking: 0.16em;
+    --mq-velocidad: 34s;        /* tiempo en recorrer una copia; más = más lento */
+    --mq-espacio: 26px;         /* separación entre palabras y puntos */
+    /* ------------------------------------- */
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    /* ancho completo aunque el tema envuelva la sección */
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    min-height: var(--mq-alto);
+    background-color: var(--mq-fondo);
+    user-select: none;
+  }
+  .brd-mq__track {
+    display: flex;
+    flex-wrap: nowrap;
+    width: max-content;
+    will-change: transform;
+    animation: brd-mq-scroll var(--mq-velocidad) linear infinite;
+  }
+  .brd-mq:hover .brd-mq__track {
+    animation-play-state: paused;
+  }
+  .brd-mq__grupo {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+  }
+  .brd-mq__item,
+  .brd-mq__sep {
+    font-family: inherit;
+    font-size: var(--mq-fuente);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: var(--mq-tracking);
+    text-transform: uppercase;
+    white-space: nowrap;
+    padding: 0 calc(var(--mq-espacio) / 2);
+  }
+  .brd-mq__item { color: var(--mq-color); }
+  .brd-mq__sep  { color: var(--mq-sep-color); }
+
+  /* 8 copias en el carril -> desplazar 1 copia = 100% / 8 = 12.5%.
+     Al terminar, el fotograma final es idéntico al inicial: bucle invisible. */
+  @keyframes brd-mq-scroll {
+    from { transform: translate3d(0, 0, 0); }
+    to   { transform: translate3d(-12.5%, 0, 0); }
+  }
+  @media screen and (max-width: 749px) {
+    .brd-mq {
+      --mq-alto: 40px;
+      --mq-fuente: 11px;
+      --mq-tracking: 0.12em;
+      --mq-espacio: 20px;
+      --mq-velocidad: 24s;
+    }
+  }
+  /* accesibilidad: sin movimiento para quien lo tenga desactivado */
+  @media (prefers-reduced-motion: reduce) {
+    .brd-mq { overflow-x: auto; }
+    .brd-mq__track { animation: none; }
+  }
+</style>

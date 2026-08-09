@@ -1,0 +1,605 @@
+{%- comment -%}
+  ============================================================
+  BORDADERÍA · Feed de Instagram
+  Cuadrícula de fotos de estilo de vida. Cada bloque es una foto
+  con su enlace a la publicación de Instagram.
+  Nota: Instagram ya no permite incrustar el feed automáticamente
+  sin una app, así que las fotos se suben desde el editor.
+  ============================================================
+{%- endcomment -%}
+
+{%- liquid
+  assign partes = section.settings.image_ratio | split: '/'
+  assign ratio_w = partes[0] | plus: 0.0
+  assign ratio_h = partes[1] | plus: 0.0
+  if ratio_w <= 0 or ratio_h <= 0
+    assign ratio_w = 1.0
+    assign ratio_h = 1.0
+  endif
+  assign ratio_pct = ratio_h | times: 100.0 | divided_by: ratio_w
+
+  assign perfil = section.settings.profile_url
+  assign usuario = section.settings.handle | strip
+  unless usuario contains '@'
+    assign usuario = '@' | append: usuario
+  endunless
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    --brd-ig-bg: {{ section.settings.bg_color }};
+    --brd-ig-media-bg: {{ section.settings.media_bg }};
+    --brd-ig-label: {{ section.settings.label_color }};
+    --brd-ig-handle: {{ section.settings.handle_color }};
+    --brd-ig-gap: {{ section.settings.gap }}px;
+    --brd-ig-radius: {{ section.settings.image_radius }}px;
+    --brd-ig-pad: {{ ratio_pct }}%;
+    --brd-ig-cols: {{ section.settings.columns_desktop }};
+    --brd-ig-cols-mobile: {{ section.settings.columns_mobile }};
+    --brd-ig-max: {{ section.settings.max_width }}px;
+  }
+
+  .brd-ig {
+    box-sizing: border-box;
+    background: var(--brd-ig-bg);
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .brd-ig {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+{%- capture icono_ig -%}
+  <svg class="brd-ig__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+    <rect x="3" y="3" width="18" height="18" rx="5"></rect>
+    <circle cx="12" cy="12" r="4"></circle>
+    <circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"></circle>
+  </svg>
+{%- endcapture -%}
+
+<section class="brd-ig">
+  <div class="brd-ig__inner page-width">
+    {%- if section.settings.label != blank or section.settings.handle != blank -%}
+      <p class="brd-ig__label">
+        {%- if perfil != blank -%}
+          <a class="brd-ig__label-link" href="{{ perfil }}" target="_blank" rel="noopener">
+        {%- endif -%}
+        {%- if section.settings.show_icon -%}{{ icono_ig }}{%- endif -%}
+        {%- if section.settings.label != blank -%}
+          <span class="brd-ig__label-text">{{ section.settings.label | escape }}</span>
+        {%- endif -%}
+        {%- if section.settings.handle != blank -%}
+          <span class="brd-ig__handle">{{ usuario | escape }}</span>
+        {%- endif -%}
+        {%- if perfil != blank -%}
+          </a>
+        {%- endif -%}
+      </p>
+    {%- endif -%}
+
+    {%- if section.settings.subheading != blank -%}
+      <p class="brd-ig__subheading">{{ section.settings.subheading | escape }}</p>
+    {%- endif -%}
+
+    <ul class="brd-ig__grid" role="list">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign foto = block.settings.image
+          assign foco = block.settings.image_position
+          if foco == 'auto'
+            assign foco = foto.presentation.focal_point | default: 'center center'
+          endif
+          assign destino = block.settings.link | default: perfil
+        -%}
+        <li class="brd-ig__item" {{ block.shopify_attributes }}>
+          {%- if destino != blank -%}
+            <a class="brd-ig__card" href="{{ destino }}" target="_blank" rel="noopener">
+          {%- else -%}
+            <div class="brd-ig__card">
+          {%- endif -%}
+
+          <div class="brd-ig__media">
+            {%- if foto != blank -%}
+              <img
+                class="brd-ig__img"
+                style="object-position: {{ foco }};"
+                src="{{ foto | image_url: width: 800 }}"
+                srcset="
+                  {{ foto | image_url: width: 400 }} 400w,
+                  {{ foto | image_url: width: 600 }} 600w,
+                  {{ foto | image_url: width: 800 }} 800w
+                "
+                sizes="(min-width: 990px) 22vw, (min-width: 750px) 30vw, 45vw"
+                alt="{{ foto.alt | default: block.settings.caption | escape }}"
+                width="{{ foto.width }}"
+                height="{{ foto.height }}"
+                loading="lazy"
+              >
+            {%- else -%}
+              {{ 'lifestyle-1' | placeholder_svg_tag: 'brd-ig__placeholder' }}
+            {%- endif -%}
+
+            {%- if section.settings.show_overlay -%}
+              <span class="brd-ig__overlay" aria-hidden="true">{{ icono_ig }}</span>
+            {%- endif -%}
+          </div>
+
+          {%- if block.settings.caption != blank -%}
+            <span class="brd-ig__caption">{{ block.settings.caption | escape }}</span>
+          {%- endif -%}
+
+          {%- if destino != blank -%}
+            </a>
+          {%- else -%}
+            </div>
+          {%- endif -%}
+        </li>
+      {%- else -%}
+        {%- for i in (1..4) -%}
+          <li class="brd-ig__item">
+            <div class="brd-ig__card">
+              <div class="brd-ig__media">
+                {{ 'lifestyle-1' | placeholder_svg_tag: 'brd-ig__placeholder' }}
+              </div>
+            </div>
+          </li>
+        {%- endfor -%}
+      {%- endfor -%}
+    </ul>
+
+    {%- if section.settings.button_label != blank and perfil != blank -%}
+      <div class="brd-ig__cta">
+        <a class="brd-ig__btn" href="{{ perfil }}" target="_blank" rel="noopener">
+          {{- section.settings.button_label | escape -}}
+        </a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<style>
+  #shopify-section-{{ section.id }} .brd-ig,
+  #shopify-section-{{ section.id }} .brd-ig *,
+  #shopify-section-{{ section.id }} .brd-ig *::before,
+  #shopify-section-{{ section.id }} .brd-ig *::after {
+    box-sizing: border-box;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ig__inner {
+    max-width: var(--brd-ig-max);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ig__label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 0;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brd-ig-label);
+  }
+
+  #shopify-section-{{ section.id }} .brd-ig__label-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ig__label-link:hover .brd-ig__handle {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ig__handle {
+    color: var(--brd-ig-handle);
+  }
+
+  #shopify-section-{{ section.id }} .brd-ig__icon {
+    width: 15px;
+    height: 15px;
+    flex: 0 0 auto;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ig__subheading {
+    margin: 10px 0 0;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--brd-ig-label);
+    opacity: 0.85;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ig__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--brd-ig-cols), minmax(0, 1fr));
+    gap: var(--brd-ig-gap);
+    margin: 28px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ig__item {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ig__card {
+    display: block;
+    width: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ig__media {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-top: var(--brd-ig-pad);
+    overflow: hidden;
+    border-radius: var(--brd-ig-radius);
+    background: var(--brd-ig-media-bg);
+  }
+
+  #shopify-section-{{ section.id }} .brd-ig__img,
+  #shopify-section-{{ section.id }} .brd-ig__placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    max-width: none;
+    min-height: 0;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ig__img {
+    object-fit: cover;
+    object-position: center center;
+    transition: transform 0.5s ease;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ig__placeholder {
+    fill: #C9C9C9;
+    background: var(--brd-ig-media-bg);
+  }
+
+  #shopify-section-{{ section.id }} .brd-ig__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(27, 27, 25, 0.35);
+    color: #FFFFFF;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ig__overlay .brd-ig__icon {
+    width: 26px;
+    height: 26px;
+  }
+
+  #shopify-section-{{ section.id }} a.brd-ig__card:hover .brd-ig__overlay,
+  #shopify-section-{{ section.id }} a.brd-ig__card:focus-visible .brd-ig__overlay {
+    opacity: 1;
+  }
+
+  #shopify-section-{{ section.id }} a.brd-ig__card:hover .brd-ig__img,
+  #shopify-section-{{ section.id }} a.brd-ig__card:focus-visible .brd-ig__img {
+    transform: scale(1.05);
+  }
+
+  #shopify-section-{{ section.id }} .brd-ig__caption {
+    display: block;
+    padding-top: 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--brd-ig-label);
+  }
+
+  #shopify-section-{{ section.id }} .brd-ig__cta {
+    margin-top: 28px;
+    text-align: center;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ig__btn {
+    display: inline-block;
+    padding: 12px 26px;
+    border: 1px solid var(--brd-ig-handle);
+    border-radius: {{ section.settings.button_radius }}px;
+    color: var(--brd-ig-handle);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ig__btn:hover,
+  #shopify-section-{{ section.id }} .brd-ig__btn:focus-visible {
+    background: var(--brd-ig-handle);
+    color: var(--brd-ig-bg);
+  }
+
+  @media screen and (max-width: 989px) {
+    #shopify-section-{{ section.id }} .brd-ig__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .brd-ig__grid {
+      grid-template-columns: repeat(var(--brd-ig-cols-mobile), minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 20px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #shopify-section-{{ section.id }} .brd-ig__img,
+    #shopify-section-{{ section.id }} .brd-ig__overlay,
+    #shopify-section-{{ section.id }} .brd-ig__btn {
+      transition: none;
+    }
+
+    #shopify-section-{{ section.id }} a.brd-ig__card:hover .brd-ig__img {
+      transform: none;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Feed de Instagram",
+  "tag": "section",
+  "class": "brd-ig-section",
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Texto de la etiqueta",
+      "default": "Síguenos en"
+    },
+    {
+      "type": "text",
+      "id": "handle",
+      "label": "Usuario de Instagram",
+      "default": "@stitchandglitch"
+    },
+    {
+      "type": "url",
+      "id": "profile_url",
+      "label": "Enlace al perfil",
+      "info": "Se usa en la etiqueta, en el botón y en las fotos que no tengan enlace propio."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_icon",
+      "label": "Mostrar el icono de Instagram",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Frase de apoyo",
+      "info": "Opcional. Ej.: \"Nuestros bordados, en la vida real.\""
+    },
+    {
+      "type": "header",
+      "content": "Cuadrícula"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "label": "Columnas en escritorio",
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columnas en móvil",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Proporción de las fotos",
+      "options": [
+        { "value": "1/1", "label": "Cuadrada (1:1)" },
+        { "value": "4/5", "label": "Vertical (4:5)" },
+        { "value": "3/4", "label": "Vertical (3:4)" },
+        { "value": "4/3", "label": "Horizontal (4:3)" }
+      ],
+      "default": "1/1"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "min": 4,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Separación entre fotos",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "image_radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Redondeo de las fotos",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 900,
+      "max": 1800,
+      "step": 20,
+      "unit": "px",
+      "label": "Ancho de la cuadrícula",
+      "default": 1440
+    },
+    {
+      "type": "checkbox",
+      "id": "show_overlay",
+      "label": "Oscurecer y mostrar el icono al pasar el cursor",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Botón"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Texto del botón",
+      "info": "Déjalo vacío para no mostrarlo. Requiere el enlace al perfil."
+    },
+    {
+      "type": "range",
+      "id": "button_radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Redondeo del botón",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Colores"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Fondo de la sección",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "media_bg",
+      "label": "Fondo de la caja de foto",
+      "default": "#F2F2F2"
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Etiqueta",
+      "default": "#6C63E8"
+    },
+    {
+      "type": "color",
+      "id": "handle_color",
+      "label": "Usuario y botón",
+      "default": "#1A4EE0"
+    },
+    {
+      "type": "header",
+      "content": "Espaciado"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Espacio superior",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Espacio inferior",
+      "default": 56
+    }
+  ],
+  "blocks": [
+    {
+      "type": "foto",
+      "name": "Foto",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Foto"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Enlace a la publicación",
+          "info": "Déjalo vacío para enlazar al perfil."
+        },
+        {
+          "type": "text",
+          "id": "caption",
+          "label": "Pie de foto",
+          "info": "Opcional. También se usa como texto alternativo."
+        },
+        {
+          "type": "select",
+          "id": "image_position",
+          "label": "Zona visible de la foto",
+          "options": [
+            { "value": "auto", "label": "Automático (punto focal)" },
+            { "value": "center top", "label": "Arriba" },
+            { "value": "center center", "label": "Centro" },
+            { "value": "center bottom", "label": "Abajo" },
+            { "value": "left center", "label": "Izquierda" },
+            { "value": "right center", "label": "Derecha" }
+          ],
+          "default": "auto"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Feed de Instagram",
+      "blocks": [
+        { "type": "foto" },
+        { "type": "foto" },
+        { "type": "foto" },
+        { "type": "foto" }
+      ]
+    }
+  ]
+}
+{% endschema %}

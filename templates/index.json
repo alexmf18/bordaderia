@@ -1,0 +1,67 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "featured-collection": {
+      "type": "featured-collection",
+      "disabled": true,
+      "settings": {
+        "collection": "all",
+        "products_to_show": 4,
+        "title": "Featured products",
+        "heading_size": "h2",
+        "description": "",
+        "show_description": false,
+        "description_style": "body",
+        "columns_desktop": 4,
+        "enable_desktop_slider": false,
+        "full_width": false,
+        "show_view_all": false,
+        "view_all_style": "solid",
+        "color_scheme": "scheme-1",
+        "image_ratio": "square",
+        "image_shape": "default",
+        "show_secondary_image": true,
+        "show_vendor": false,
+        "show_rating": false,
+        "quick_add": "none",
+        "columns_mobile": "2",
+        "swipe_on_mobile": true,
+        "padding_top": 56,
+        "padding_bottom": 68
+      }
+    },
+    "custom_liquid_GEatcq": {
+      "type": "custom-liquid",
+      "name": "t:sections.custom-liquid.presets.name",
+      "settings": {
+        "custom_liquid": "{%- comment -%}\n  ============================================================\n  BORDADERÍA · Sección Hero\n  Pegar en: Personalizar tema → Añadir sección → Liquid personalizado\n  Todo lo editable está en las variables CSS de :root del bloque <style>.\n  ============================================================\n{%- endcomment -%}\n\n{%- assign hero_img = 'https://cdn.shopify.com/s/files/1/1042/9605/5067/files/img_hero.png?v=1786125969' -%}\n\n<link rel=\"preload\" as=\"image\" href=\"{{ hero_img }}\">\n\n<section class=\"brd-hero\" role=\"banner\" aria-label=\"Bordados con precisión digital\">\n  <div class=\"brd-hero__inner\">\n    <h1 class=\"brd-hero__title\">\n      <span class=\"brd-hero__line brd-hero__line--dark\">Bordados con Precisión Digital.</span>\n      <span class=\"brd-hero__line brd-hero__line--accent\">Tu estilo, puntada a puntada.</span>\n    </h1>\n\n    {%- comment -%}\n      ¿Quieres un botón? Descomenta este bloque y cambia el enlace.\n    {%- endcomment -%}\n    {%- comment -%}\n    <a class=\"brd-hero__cta\" href=\"/collections/all\">Ver camisetas</a>\n    {%- endcomment -%}\n  </div>\n</section>\n\n<style>\n  /* --- quita el espacio que el tema añade alrededor de la sección --- */\n  .shopify-section:has(.brd-hero) {\n    padding-top: 0 !important;\n    padding-bottom: 0 !important;\n    margin-top: 0 !important;\n    margin-bottom: 0 !important;\n  }\n  .shopify-section:has(.brd-hero) > *:not(.brd-hero) {\n    padding-top: 0 !important;\n    padding-bottom: 0 !important;\n    margin-top: 0 !important;\n    margin-bottom: 0 !important;\n  }\n\n  .brd-hero {\n    /* ---------- ajustes rápidos ---------- */\n    --hero-image: url(\"{{ hero_img }}\");\n    --hero-color-dark: #1B1B19;      /* primera línea */\n    --hero-color-accent: #1A4EE0;    /* segunda línea (azul) */\n    --hero-height: clamp(320px, 47vw, 620px);\n    --hero-font-size: clamp(20px, 2.7vw, 36px);\n    --hero-focus-x: 50%;             /* encuadre horizontal de la foto */\n    --hero-focus-y: 50%;             /* encuadre vertical de la foto */\n    --hero-text-shift: -4%;          /* sube el texto respecto al centro */\n    --hero-scrim: 0;                 /* 0 = sin velo; sube a .35 si el texto no se lee */\n    /* ------------------------------------- */\n\n    position: relative;\n    box-sizing: border-box;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n\n    /* ancho completo aunque el tema envuelva la sección en un contenedor */\n    width: 100vw;\n    max-width: 100vw;\n    margin-left: calc(50% - 50vw);\n    margin-right: calc(50% - 50vw);\n\n    min-height: var(--hero-height);\n    padding: 5vw 24px;\n\n    background-image: var(--hero-image);\n    background-size: cover;\n    background-position: var(--hero-focus-x) var(--hero-focus-y);\n    background-repeat: no-repeat;\n    background-color: #F3F0EB; /* color de respaldo mientras carga */\n  }\n\n  /* velo opcional para mejorar la legibilidad */\n  .brd-hero::after {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    background: #FFFFFF;\n    opacity: var(--hero-scrim);\n    pointer-events: none;\n  }\n\n  .brd-hero__inner {\n    position: relative;\n    z-index: 1;\n    max-width: 760px;\n    text-align: center;\n    transform: translateY(var(--hero-text-shift));\n  }\n\n  .brd-hero__title {\n    margin: 0;\n    padding: 0;\n    font-family: inherit;\n    font-size: var(--hero-font-size);\n    font-weight: 600;\n    line-height: 1.32;\n    letter-spacing: -0.01em;\n    text-transform: none;\n  }\n\n  .brd-hero__line {\n    display: block;\n  }\n\n  .brd-hero__line--dark   { color: var(--hero-color-dark); }\n  .brd-hero__line--accent { color: var(--hero-color-accent); }\n\n  .brd-hero__cta {\n    display: inline-block;\n    margin-top: 28px;\n    padding: 14px 34px;\n    border: 1px solid var(--hero-color-dark);\n    border-radius: 2px;\n    background: var(--hero-color-dark);\n    color: #FFFFFF;\n    font-size: 14px;\n    font-weight: 500;\n    letter-spacing: 0.12em;\n    text-transform: uppercase;\n    text-decoration: none;\n    transition: background-color .25s ease, color .25s ease;\n  }\n\n  .brd-hero__cta:hover {\n    background: transparent;\n    color: var(--hero-color-dark);\n  }\n\n  /* ---------- móvil ---------- */\n  @media screen and (max-width: 749px) {\n    .brd-hero {\n      --hero-height: 62vh;\n      --hero-font-size: clamp(19px, 5.4vw, 26px);\n      --hero-text-shift: -2%;\n      padding: 32px 20px;\n    }\n    .brd-hero__inner { max-width: 22ch; }\n  }\n\n  @media (prefers-reduced-motion: reduce) {\n    .brd-hero__cta { transition: none; }\n  }\n</style>",
+        "color_scheme": "",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
+    "custom_liquid_qmfKQQ": {
+      "type": "custom-liquid",
+      "name": "t:sections.custom-liquid.presets.name",
+      "settings": {
+        "custom_liquid": "{%- comment -%}\n  ============================================================\n  BORDADERÍA · Banner marquesina (texto en movimiento)\n  Pegar en: Personalizar tema → Añadir sección → Liquid personalizado\n  Edita los mensajes en la variable \"mensajes\" (separados por |).\n  El resto se ajusta en las variables CSS del bloque <style>.\n  ============================================================\n{%- endcomment -%}\n\n{%- assign mensajes = 'Diseños exclusivos|Bordados personalizados|Envíos a todo el país|Calidad premium' | split: '|' -%}\n\n{%- capture grupo -%}\n  {%- for mensaje in mensajes -%}\n    <span class=\"brd-mq__item\">{{ mensaje | strip }}</span>\n    <span class=\"brd-mq__sep\" aria-hidden=\"true\">&middot;</span>\n  {%- endfor -%}\n{%- endcapture -%}\n\n<div class=\"brd-mq\" role=\"marquee\" aria-label=\"Ventajas de comprar en Bordadería\">\n  <div class=\"brd-mq__track\">\n    <div class=\"brd-mq__grupo\">{{ grupo }}</div>\n    <div class=\"brd-mq__grupo\" aria-hidden=\"true\">{{ grupo }}</div>\n  </div>\n</div>\n\n<style>\n  /* --- quita el espacio que el tema añade alrededor de la sección --- */\n  .shopify-section:has(.brd-mq) {\n    padding-top: 0 !important;\n    padding-bottom: 0 !important;\n    margin-top: 0 !important;\n    margin-bottom: 0 !important;\n  }\n  .shopify-section:has(.brd-mq) > *:not(.brd-mq) {\n    padding-top: 0 !important;\n    padding-bottom: 0 !important;\n    margin-top: 0 !important;\n    margin-bottom: 0 !important;\n  }\n\n  .brd-mq {\n    /* ---------- ajustes rápidos ---------- */\n    --mq-fondo: #EFEDED;        /* fondo azul muy oscuro */\n    --mq-color: #6C63E8;        /* color del texto */\n    --mq-sep-color: #6C63E8;    /* color de los puntos separadores */\n    --mq-alto: 46px;\n    --mq-fuente: 12px;\n    --mq-tracking: 0.16em;\n    --mq-velocidad: 34s;        /* más segundos = más lento */\n    --mq-espacio: 26px;         /* separación entre palabras y puntos */\n    /* ------------------------------------- */\n\n    box-sizing: border-box;\n    position: relative;\n    display: flex;\n    align-items: center;\n    overflow: hidden;\n\n    /* ancho completo aunque el tema envuelva la sección */\n    width: 100vw;\n    max-width: 100vw;\n    margin-left: calc(50% - 50vw);\n    margin-right: calc(50% - 50vw);\n\n    min-height: var(--mq-alto);\n    background-color: var(--mq-fondo);\n    user-select: none;\n  }\n\n  .brd-mq__track {\n    display: flex;\n    width: max-content;\n    will-change: transform;\n    animation: brd-mq-scroll var(--mq-velocidad) linear infinite;\n  }\n\n  .brd-mq:hover .brd-mq__track {\n    animation-play-state: paused;\n  }\n\n  .brd-mq__grupo {\n    display: flex;\n    align-items: center;\n    flex: 0 0 auto;\n  }\n\n  .brd-mq__item,\n  .brd-mq__sep {\n    font-family: inherit;\n    font-size: var(--mq-fuente);\n    font-weight: 500;\n    line-height: 1;\n    letter-spacing: var(--mq-tracking);\n    text-transform: uppercase;\n    white-space: nowrap;\n    padding: 0 calc(var(--mq-espacio) / 2);\n  }\n\n  .brd-mq__item { color: var(--mq-color); }\n  .brd-mq__sep  { color: var(--mq-sep-color); }\n\n  @keyframes brd-mq-scroll {\n    from { transform: translate3d(0, 0, 0); }\n    to   { transform: translate3d(-50%, 0, 0); }\n  }\n\n  @media screen and (max-width: 749px) {\n    .brd-mq {\n      --mq-alto: 40px;\n      --mq-fuente: 11px;\n      --mq-tracking: 0.12em;\n      --mq-espacio: 20px;\n      --mq-velocidad: 24s;\n    }\n  }\n\n  /* accesibilidad: sin movimiento para quien lo tenga desactivado */\n  @media (prefers-reduced-motion: reduce) {\n    .brd-mq { overflow-x: auto; }\n    .brd-mq__track { animation: none; }\n  }\n</style>",
+        "color_scheme": "",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    }
+  },
+  "order": [
+    "featured-collection",
+    "custom_liquid_GEatcq",
+    "custom_liquid_qmfKQQ"
+  ]
+}
