@@ -11,42 +11,73 @@
   "name": "t:sections.footer.name",
   "type": "footer",
   "sections": {
-    "newsletter": {
-      "type": "newsletter",
+    "bordaderia_footer_C6RgCH": {
+      "type": "bordaderia-footer",
       "blocks": {
-        "heading": {
-          "type": "heading",
+        "enlace_kLwVrB": {
+          "type": "enlace",
           "settings": {
-            "heading": "Subscribe to our emails",
-            "heading_size": "h1"
+            "label": "Política de privacidad",
+            "link": ""
           }
         },
-        "paragraph": {
-          "type": "paragraph",
+        "enlace_UL7xEF": {
+          "type": "enlace",
           "settings": {
-            "text": "<p>Join our email list for exclusive offers and the latest news. </p>"
+            "label": "Términos del servicio",
+            "link": ""
           }
         },
-        "email-form": {
-          "type": "email_form",
-          "settings": {}
+        "enlace_qKMPN7": {
+          "type": "enlace",
+          "settings": {
+            "label": "Envíos",
+            "link": ""
+          }
+        },
+        "enlace_cFe77n": {
+          "type": "enlace",
+          "settings": {
+            "label": "Contacto",
+            "link": ""
+          }
         }
       },
       "block_order": [
-        "heading",
-        "paragraph",
-        "email-form"
+        "enlace_kLwVrB",
+        "enlace_UL7xEF",
+        "enlace_qKMPN7",
+        "enlace_cFe77n"
       ],
-      "disabled": true,
+      "name": "Footer personalizado",
       "settings": {
-        "color_scheme": "scheme-2",
-        "full_width": true,
-        "padding_top": 44,
-        "padding_bottom": 8
+        "brand": "BORDADERIA",
+        "brand_uppercase": true,
+        "brand_size": 18,
+        "logo": "shopify://shop_images/BO8AB1_1_754d371b-f9ad-479b-9fd6-027ee6679591.png",
+        "logo_width": 140,
+        "links_align": "center",
+        "link_gap": 26,
+        "link_size": 13,
+        "nav_label": "Enlaces del pie de página",
+        "copyright_text": "BORDADERIA. Bordado de precisión.",
+        "show_year": true,
+        "legal_size": 12,
+        "max_width": 1440,
+        "border_width": 1,
+        "bg_color": "#F7F6F4",
+        "border_color": "#E5E3DF",
+        "brand_color": "#1B1B19",
+        "link_color": "#6C63E8",
+        "link_hover_color": "#1A4EE0",
+        "legal_color": "#2E3A8C",
+        "padding_top": 26,
+        "padding_bottom": 26
       }
     },
     "footer": {
       "type": "footer",
+      "disabled": true,
       "settings": {
         "color_scheme": "scheme-4",
         "newsletter_enable": false,
@@ -64,7 +95,7 @@
     }
   },
   "order": [
-    "newsletter",
+    "bordaderia_footer_C6RgCH",
     "footer"
   ]
 }
