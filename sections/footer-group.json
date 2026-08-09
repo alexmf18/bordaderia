@@ -55,7 +55,7 @@
         "brand_uppercase": true,
         "brand_size": 18,
         "logo": "shopify://shop_images/BO8AB1_1_754d371b-f9ad-479b-9fd6-027ee6679591.png",
-        "logo_width": 140,
+        "logo_width": 180,
         "links_align": "center",
         "link_gap": 26,
         "link_size": 13,
@@ -71,7 +71,7 @@
         "link_color": "#6C63E8",
         "link_hover_color": "#1A4EE0",
         "legal_color": "#2E3A8C",
-        "padding_top": 26,
+        "padding_top": 32,
         "padding_bottom": 26
       }
     },
