@@ -116,7 +116,7 @@
       ],
       "name": "Colección destacada (5 artículos)",
       "settings": {
-        "label": "Colección destacada",
+        "label": "ARTICULOS DESTACADOS",
         "heading": "",
         "show_secondary_image": true,
         "image_ratio": "3/4",
@@ -211,7 +211,7 @@
       "name": "Feed de Instagram",
       "settings": {
         "label": "Síguenos en",
-        "handle": "@stitchandglitch",
+        "handle": "@LABORDADERIA",
         "profile_url": "",
         "show_icon": true,
         "subheading": "",
