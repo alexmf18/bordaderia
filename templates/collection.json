@@ -9,12 +9,43 @@
  */
 {
   "sections": {
-    "catalogo_cabecera": {
+    "main-collection-banner": {
+      "type": "main-collection-banner",
+      "disabled": true,
+      "settings": {
+        "show_collection_description": true,
+        "show_collection_image": true,
+        "color_scheme": "scheme-1"
+      }
+    },
+    "main-collection-product-grid": {
+      "type": "main-collection-product-grid",
+      "disabled": true,
+      "settings": {
+        "products_per_page": 20,
+        "columns_desktop": 4,
+        "columns_mobile": "2",
+        "color_scheme": "scheme-1",
+        "image_ratio": "adapt",
+        "image_shape": "default",
+        "show_secondary_image": true,
+        "show_vendor": false,
+        "show_rating": false,
+        "quick_add": "none",
+        "enable_filtering": true,
+        "filter_type": "horizontal",
+        "enable_sorting": true,
+        "padding_top": 0,
+        "padding_bottom": 68
+      }
+    },
+    "bordaderia_catalogo_cabecera_TaQrU7": {
       "type": "bordaderia-catalogo-cabecera",
+      "name": "Catálogo · Cabecera",
       "settings": {
         "label": "",
-        "heading": "",
-        "text": "",
+        "heading": "Colección Completa",
+        "text": "<p>Descubre nuestra colección de bordados únicos y personalizados. Cada pieza cuenta una historia hecha con dedicación y detalle. Explora nuestros artículos y encuentra el diseño perfecto que refleje tu estilo.</p>",
         "align": "center",
         "heading_size": 34,
         "text_size": 13,
@@ -27,8 +58,9 @@
         "padding_bottom": 32
       }
     },
-    "catalogo_productos": {
+    "bordaderia_catalogo_grid_PDHxwd": {
       "type": "bordaderia-catalogo-grid",
+      "name": "Catálogo · Productos",
       "settings": {
         "show_toolbar": true,
         "filter_label": "Filtrar por:",
@@ -66,7 +98,9 @@
     }
   },
   "order": [
-    "catalogo_cabecera",
-    "catalogo_productos"
+    "main-collection-banner",
+    "main-collection-product-grid",
+    "bordaderia_catalogo_cabecera_TaQrU7",
+    "bordaderia_catalogo_grid_PDHxwd"
   ]
 }
