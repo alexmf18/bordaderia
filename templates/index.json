@@ -42,7 +42,7 @@
       "type": "custom-liquid",
       "name": "t:sections.custom-liquid.presets.name",
       "settings": {
-        "custom_liquid": "{%- comment -%}\n  ============================================================\n  BORDADERÍA · Sección Hero\n  Pegar en: Personalizar tema → Añadir sección → Liquid personalizado\n  Todo lo editable está en las variables CSS de :root del bloque <style>.\n  ============================================================\n{%- endcomment -%}\n\n{%- assign hero_img = 'https://cdn.shopify.com/s/files/1/1042/9605/5067/files/img_hero.png?v=1786125969' -%}\n\n<link rel=\"preload\" as=\"image\" href=\"{{ hero_img }}\">\n\n<section class=\"brd-hero\" role=\"banner\" aria-label=\"Bordados con precisión digital\">\n  <div class=\"brd-hero__inner\">\n    <h1 class=\"brd-hero__title\">\n      <span class=\"brd-hero__line brd-hero__line--dark\">Bordados con Precisión Digital.</span>\n      <span class=\"brd-hero__line brd-hero__line--accent\">Tu estilo, puntada a puntada.</span>\n    </h1>\n\n    {%- comment -%}\n      ¿Quieres un botón? Descomenta este bloque y cambia el enlace.\n    {%- endcomment -%}\n    {%- comment -%}\n    <a class=\"brd-hero__cta\" href=\"/collections/all\">Ver camisetas</a>\n    {%- endcomment -%}\n  </div>\n</section>\n\n<style>\n  /* --- quita el espacio que el tema añade alrededor de la sección --- */\n  .shopify-section:has(.brd-hero) {\n    padding-top: 0 !important;\n    padding-bottom: 0 !important;\n    margin-top: 0 !important;\n    margin-bottom: 0 !important;\n  }\n  .shopify-section:has(.brd-hero) > *:not(.brd-hero) {\n    padding-top: 0 !important;\n    padding-bottom: 0 !important;\n    margin-top: 0 !important;\n    margin-bottom: 0 !important;\n  }\n\n  .brd-hero {\n    /* ---------- ajustes rápidos ---------- */\n    --hero-image: url(\"{{ hero_img }}\");\n    --hero-color-dark: #1B1B19;      /* primera línea */\n    --hero-color-accent: #1A4EE0;    /* segunda línea (azul) */\n    --hero-height: clamp(320px, 47vw, 620px);\n    --hero-font-size: clamp(20px, 2.7vw, 36px);\n    --hero-focus-x: 50%;             /* encuadre horizontal de la foto */\n    --hero-focus-y: 50%;             /* encuadre vertical de la foto */\n    --hero-text-shift: -4%;          /* sube el texto respecto al centro */\n    --hero-scrim: 0;                 /* 0 = sin velo; sube a .35 si el texto no se lee */\n    /* ------------------------------------- */\n\n    position: relative;\n    box-sizing: border-box;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n\n    /* ancho completo aunque el tema envuelva la sección en un contenedor */\n    width: 100vw;\n    max-width: 100vw;\n    margin-left: calc(50% - 50vw);\n    margin-right: calc(50% - 50vw);\n\n    min-height: var(--hero-height);\n    padding: 5vw 24px;\n\n    background-image: var(--hero-image);\n    background-size: cover;\n    background-position: var(--hero-focus-x) var(--hero-focus-y);\n    background-repeat: no-repeat;\n    background-color: #F3F0EB; /* color de respaldo mientras carga */\n  }\n\n  /* velo opcional para mejorar la legibilidad */\n  .brd-hero::after {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    background: #FFFFFF;\n    opacity: var(--hero-scrim);\n    pointer-events: none;\n  }\n\n  .brd-hero__inner {\n    position: relative;\n    z-index: 1;\n    max-width: 760px;\n    text-align: center;\n    transform: translateY(var(--hero-text-shift));\n  }\n\n  .brd-hero__title {\n    margin: 0;\n    padding: 0;\n    font-family: inherit;\n    font-size: var(--hero-font-size);\n    font-weight: 600;\n    line-height: 1.32;\n    letter-spacing: -0.01em;\n    text-transform: none;\n  }\n\n  .brd-hero__line {\n    display: block;\n  }\n\n  .brd-hero__line--dark   { color: var(--hero-color-dark); }\n  .brd-hero__line--accent { color: var(--hero-color-accent); }\n\n  .brd-hero__cta {\n    display: inline-block;\n    margin-top: 28px;\n    padding: 14px 34px;\n    border: 1px solid var(--hero-color-dark);\n    border-radius: 2px;\n    background: var(--hero-color-dark);\n    color: #FFFFFF;\n    font-size: 14px;\n    font-weight: 500;\n    letter-spacing: 0.12em;\n    text-transform: uppercase;\n    text-decoration: none;\n    transition: background-color .25s ease, color .25s ease;\n  }\n\n  .brd-hero__cta:hover {\n    background: transparent;\n    color: var(--hero-color-dark);\n  }\n\n  /* ---------- móvil ---------- */\n  @media screen and (max-width: 749px) {\n    .brd-hero {\n      --hero-height: 62vh;\n      --hero-font-size: clamp(19px, 5.4vw, 26px);\n      --hero-text-shift: -2%;\n      padding: 32px 20px;\n    }\n    .brd-hero__inner { max-width: 22ch; }\n  }\n\n  @media (prefers-reduced-motion: reduce) {\n    .brd-hero__cta { transition: none; }\n  }\n</style>",
+        "custom_liquid": "{%- comment -%}\n  ============================================================\n  BORDADERÍA · Sección Hero\n  Pegar en: Personalizar tema → Añadir sección → Liquid personalizado\n  Todo lo editable está en las variables CSS de :root del bloque <style>.\n  ============================================================\n{%- endcomment -%}\n\n{%- assign hero_img = 'https://cdn.shopify.com/s/files/1/1042/9605/5067/files/img_hero.png?v=1786125969' -%}\n\n<link rel=\"preload\" as=\"image\" href=\"{{ hero_img }}\">\n\n<section class=\"brd-hero\" role=\"banner\" aria-label=\"Bordados con precisión digital\">\n  <div class=\"brd-hero__inner\">\n    <h1 class=\"brd-hero__title\">\n      <span class=\"brd-hero__line brd-hero__line--dark\">Bordados con Precisión Digital.</span>\n      <span class=\"brd-hero__line brd-hero__line--accent\">Tu estilo, puntada a puntada.</span>\n    </h1>\n\n    {%- comment -%}\n      ¿Quieres un botón? Descomenta este bloque y cambia el enlace.\n    {%- endcomment -%}\n    {%- comment -%}\n    <a class=\"brd-hero__cta\" href=\"/collections/all\">Ver camisetas</a>\n    {%- endcomment -%}\n  </div>\n</section>\n\n<style>\n  /* --- quita el espacio que el tema añade alrededor de la sección --- */\n  .shopify-section:has(.brd-hero) {\n    padding-top: 0 !important;\n    padding-bottom: 0 !important;\n    margin-top: 0 !important;\n    margin-bottom: 0 !important;\n  }\n  .shopify-section:has(.brd-hero) > *:not(.brd-hero) {\n    padding-top: 0 !important;\n    padding-bottom: 0 !important;\n    margin-top: 0 !important;\n    margin-bottom: 0 !important;\n  }\n\n  .brd-hero {\n    /* ---------- ajustes rápidos ---------- */\n    --hero-image: url(\"{{ hero_img }}\");\n    --hero-color-dark: #1B1B19;      /* primera línea */\n    --hero-color-accent: #1A4EE0;    /* segunda línea (azul) */\n    --hero-height: clamp(320px, 47vw, 534px);\n    --hero-font-size: clamp(20px, 2.7vw, 36px);\n    --hero-focus-x: 50%;             /* encuadre horizontal de la foto */\n    --hero-focus-y: 50%;             /* encuadre vertical de la foto */\n    --hero-text-shift: -4%;          /* sube el texto respecto al centro */\n    --hero-scrim: 0;                 /* 0 = sin velo; sube a .35 si el texto no se lee */\n    /* ------------------------------------- */\n\n    position: relative;\n    box-sizing: border-box;\n    display: flex;\n    align-items: center;\n    justify-content: center;\n\n    /* ancho completo aunque el tema envuelva la sección en un contenedor */\n    width: 100vw;\n    max-width: 100vw;\n    margin-left: calc(50% - 50vw);\n    margin-right: calc(50% - 50vw);\n\n    min-height: var(--hero-height);\n    padding: 5vw 24px;\n\n    background-image: var(--hero-image);\n    background-size: cover;\n    background-position: var(--hero-focus-x) var(--hero-focus-y);\n    background-repeat: no-repeat;\n    background-color: #F3F0EB; /* color de respaldo mientras carga */\n  }\n\n  /* velo opcional para mejorar la legibilidad */\n  .brd-hero::after {\n    content: \"\";\n    position: absolute;\n    inset: 0;\n    background: #FFFFFF;\n    opacity: var(--hero-scrim);\n    pointer-events: none;\n  }\n\n  .brd-hero__inner {\n    position: relative;\n    z-index: 1;\n    max-width: 760px;\n    text-align: center;\n    transform: translateY(var(--hero-text-shift));\n  }\n\n  .brd-hero__title {\n    margin: 0;\n    padding: 0;\n    font-family: inherit;\n    font-size: var(--hero-font-size);\n    font-weight: 600;\n    line-height: 1.32;\n    letter-spacing: -0.01em;\n    text-transform: none;\n  }\n\n  .brd-hero__line {\n    display: block;\n  }\n\n  .brd-hero__line--dark   { color: var(--hero-color-dark); }\n  .brd-hero__line--accent { color: var(--hero-color-accent); }\n\n  .brd-hero__cta {\n    display: inline-block;\n    margin-top: 28px;\n    padding: 14px 34px;\n    border: 1px solid var(--hero-color-dark);\n    border-radius: 2px;\n    background: var(--hero-color-dark);\n    color: #FFFFFF;\n    font-size: 14px;\n    font-weight: 500;\n    letter-spacing: 0.12em;\n    text-transform: uppercase;\n    text-decoration: none;\n    transition: background-color .25s ease, color .25s ease;\n  }\n\n  .brd-hero__cta:hover {\n    background: transparent;\n    color: var(--hero-color-dark);\n  }\n\n  /* ---------- móvil ---------- */\n  @media screen and (max-width: 749px) {\n    .brd-hero {\n      --hero-height: 62vh;\n      --hero-font-size: clamp(19px, 5.4vw, 26px);\n      --hero-text-shift: -2%;\n      padding: 32px 20px;\n    }\n    .brd-hero__inner { max-width: 22ch; }\n  }\n\n  @media (prefers-reduced-motion: reduce) {\n    .brd-hero__cta { transition: none; }\n  }\n</style>",
         "color_scheme": "",
         "padding_top": 0,
         "padding_bottom": 0
@@ -52,16 +52,258 @@
       "type": "custom-liquid",
       "name": "t:sections.custom-liquid.presets.name",
       "settings": {
-        "custom_liquid": "{%- comment -%}\n  ============================================================\n  BORDADERÍA · Banner marquesina (texto en movimiento)\n  Pegar en: Personalizar tema → Añadir sección → Liquid personalizado\n  Edita los mensajes en la variable \"mensajes\" (separados por |).\n  El resto se ajusta en las variables CSS del bloque <style>.\n  ============================================================\n{%- endcomment -%}\n\n{%- assign mensajes = 'Diseños exclusivos|Bordados personalizados|Envíos a todo el país|Calidad premium' | split: '|' -%}\n\n{%- capture grupo -%}\n  {%- for mensaje in mensajes -%}\n    <span class=\"brd-mq__item\">{{ mensaje | strip }}</span>\n    <span class=\"brd-mq__sep\" aria-hidden=\"true\">&middot;</span>\n  {%- endfor -%}\n{%- endcapture -%}\n\n<div class=\"brd-mq\" role=\"marquee\" aria-label=\"Ventajas de comprar en Bordadería\">\n  <div class=\"brd-mq__track\">\n    <div class=\"brd-mq__grupo\">{{ grupo }}</div>\n    <div class=\"brd-mq__grupo\" aria-hidden=\"true\">{{ grupo }}</div>\n  </div>\n</div>\n\n<style>\n  /* --- quita el espacio que el tema añade alrededor de la sección --- */\n  .shopify-section:has(.brd-mq) {\n    padding-top: 0 !important;\n    padding-bottom: 0 !important;\n    margin-top: 0 !important;\n    margin-bottom: 0 !important;\n  }\n  .shopify-section:has(.brd-mq) > *:not(.brd-mq) {\n    padding-top: 0 !important;\n    padding-bottom: 0 !important;\n    margin-top: 0 !important;\n    margin-bottom: 0 !important;\n  }\n\n  .brd-mq {\n    /* ---------- ajustes rápidos ---------- */\n    --mq-fondo: #EFEDED;        /* fondo azul muy oscuro */\n    --mq-color: #6C63E8;        /* color del texto */\n    --mq-sep-color: #6C63E8;    /* color de los puntos separadores */\n    --mq-alto: 46px;\n    --mq-fuente: 12px;\n    --mq-tracking: 0.16em;\n    --mq-velocidad: 34s;        /* más segundos = más lento */\n    --mq-espacio: 26px;         /* separación entre palabras y puntos */\n    /* ------------------------------------- */\n\n    box-sizing: border-box;\n    position: relative;\n    display: flex;\n    align-items: center;\n    overflow: hidden;\n\n    /* ancho completo aunque el tema envuelva la sección */\n    width: 100vw;\n    max-width: 100vw;\n    margin-left: calc(50% - 50vw);\n    margin-right: calc(50% - 50vw);\n\n    min-height: var(--mq-alto);\n    background-color: var(--mq-fondo);\n    user-select: none;\n  }\n\n  .brd-mq__track {\n    display: flex;\n    width: max-content;\n    will-change: transform;\n    animation: brd-mq-scroll var(--mq-velocidad) linear infinite;\n  }\n\n  .brd-mq:hover .brd-mq__track {\n    animation-play-state: paused;\n  }\n\n  .brd-mq__grupo {\n    display: flex;\n    align-items: center;\n    flex: 0 0 auto;\n  }\n\n  .brd-mq__item,\n  .brd-mq__sep {\n    font-family: inherit;\n    font-size: var(--mq-fuente);\n    font-weight: 500;\n    line-height: 1;\n    letter-spacing: var(--mq-tracking);\n    text-transform: uppercase;\n    white-space: nowrap;\n    padding: 0 calc(var(--mq-espacio) / 2);\n  }\n\n  .brd-mq__item { color: var(--mq-color); }\n  .brd-mq__sep  { color: var(--mq-sep-color); }\n\n  @keyframes brd-mq-scroll {\n    from { transform: translate3d(0, 0, 0); }\n    to   { transform: translate3d(-50%, 0, 0); }\n  }\n\n  @media screen and (max-width: 749px) {\n    .brd-mq {\n      --mq-alto: 40px;\n      --mq-fuente: 11px;\n      --mq-tracking: 0.12em;\n      --mq-espacio: 20px;\n      --mq-velocidad: 24s;\n    }\n  }\n\n  /* accesibilidad: sin movimiento para quien lo tenga desactivado */\n  @media (prefers-reduced-motion: reduce) {\n    .brd-mq { overflow-x: auto; }\n    .brd-mq__track { animation: none; }\n  }\n</style>",
+        "custom_liquid": "{%- comment -%}\n  ============================================================\n  BORDADERÍA · Banner marquesina (texto en movimiento)\n  Pegar en: Personalizar tema → Añadir sección → Liquid personalizado\n  Edita los mensajes en la variable \"mensajes\" (separados por |).\n  El resto se ajusta en las variables CSS del bloque <style>.\n\n  CORREGIDO: el texto ya no se corta. Antes había 2 copias y la\n  animación desplazaba el 50% del carril; si una copia era más\n  estrecha que la pantalla quedaba un hueco vacío. Ahora hay 8\n  copias y la animación desplaza exactamente 1 copia (12.5%).\n  ============================================================\n{%- endcomment -%}\n{%- assign mensajes = 'Diseños exclusivos|Bordados personalizados|Envíos a todo el país|Calidad premium' | split: '|' -%}\n{%- capture grupo -%}\n  {%- for mensaje in mensajes -%}\n    <span class=\"brd-mq__item\">{{ mensaje | strip }}</span>\n    <span class=\"brd-mq__sep\" aria-hidden=\"true\">&middot;</span>\n  {%- endfor -%}\n{%- endcapture -%}\n<div class=\"brd-mq\" role=\"marquee\" aria-label=\"Ventajas de comprar en Bordadería\">\n  <div class=\"brd-mq__track\">\n    <div class=\"brd-mq__grupo\">{{ grupo }}</div>\n    {%- for i in (2..8) -%}\n      <div class=\"brd-mq__grupo\" aria-hidden=\"true\">{{ grupo }}</div>\n    {%- endfor -%}\n  </div>\n</div>\n<style>\n  /* --- quita el espacio que el tema añade alrededor de la sección --- */\n  .shopify-section:has(.brd-mq) {\n    padding-top: 0 !important;\n    padding-bottom: 0 !important;\n    margin-top: 0 !important;\n    margin-bottom: 0 !important;\n  }\n  .shopify-section:has(.brd-mq) > *:not(.brd-mq) {\n    padding-top: 0 !important;\n    padding-bottom: 0 !important;\n    margin-top: 0 !important;\n    margin-bottom: 0 !important;\n  }\n  .brd-mq {\n    /* ---------- ajustes rápidos ---------- */\n    --mq-fondo: #EFEDED;        /* fondo de la banda */\n    --mq-color: #6C63E8;        /* color del texto */\n    --mq-sep-color: #6C63E8;    /* color de los puntos separadores */\n    --mq-alto: 46px;\n    --mq-fuente: 12px;\n    --mq-tracking: 0.16em;\n    --mq-velocidad: 34s;        /* tiempo en recorrer una copia; más = más lento */\n    --mq-espacio: 26px;         /* separación entre palabras y puntos */\n    /* ------------------------------------- */\n    box-sizing: border-box;\n    position: relative;\n    display: flex;\n    align-items: center;\n    overflow: hidden;\n    /* ancho completo aunque el tema envuelva la sección */\n    width: 100vw;\n    max-width: 100vw;\n    margin-left: calc(50% - 50vw);\n    margin-right: calc(50% - 50vw);\n    min-height: var(--mq-alto);\n    background-color: var(--mq-fondo);\n    user-select: none;\n  }\n  .brd-mq__track {\n    display: flex;\n    flex-wrap: nowrap;\n    width: max-content;\n    will-change: transform;\n    animation: brd-mq-scroll var(--mq-velocidad) linear infinite;\n  }\n  .brd-mq:hover .brd-mq__track {\n    animation-play-state: paused;\n  }\n  .brd-mq__grupo {\n    display: flex;\n    align-items: center;\n    flex: 0 0 auto;\n  }\n  .brd-mq__item,\n  .brd-mq__sep {\n    font-family: inherit;\n    font-size: var(--mq-fuente);\n    font-weight: 500;\n    line-height: 1;\n    letter-spacing: var(--mq-tracking);\n    text-transform: uppercase;\n    white-space: nowrap;\n    padding: 0 calc(var(--mq-espacio) / 2);\n  }\n  .brd-mq__item { color: var(--mq-color); }\n  .brd-mq__sep  { color: var(--mq-sep-color); }\n\n  /* 8 copias en el carril -> desplazar 1 copia = 100% / 8 = 12.5%.\n     Al terminar, el fotograma final es idéntico al inicial: bucle invisible. */\n  @keyframes brd-mq-scroll {\n    from { transform: translate3d(0, 0, 0); }\n    to   { transform: translate3d(-12.5%, 0, 0); }\n  }\n  @media screen and (max-width: 749px) {\n    .brd-mq {\n      --mq-alto: 40px;\n      --mq-fuente: 11px;\n      --mq-tracking: 0.12em;\n      --mq-espacio: 20px;\n      --mq-velocidad: 24s;\n    }\n  }\n  /* accesibilidad: sin movimiento para quien lo tenga desactivado */\n  @media (prefers-reduced-motion: reduce) {\n    .brd-mq { overflow-x: auto; }\n    .brd-mq__track { animation: none; }\n  }\n</style>",
         "color_scheme": "",
         "padding_top": 0,
         "padding_bottom": 0
+      }
+    },
+    "bordaderia_destacados_WRawnc": {
+      "type": "bordaderia-destacados",
+      "blocks": {
+        "product_CGqi8M": {
+          "type": "product",
+          "settings": {
+            "product": "floral-white-top",
+            "image_position": "left top",
+            "image_zoom": 100,
+            "image_fit": "inherit"
+          }
+        },
+        "product_izTmgc": {
+          "type": "product",
+          "settings": {
+            "product": "silk-summer-top",
+            "image_position": "auto",
+            "image_zoom": 100,
+            "image_fit": "inherit"
+          }
+        },
+        "product_KhX8g8": {
+          "type": "product",
+          "settings": {
+            "product": "ocean-blue-shirt",
+            "image_position": "auto",
+            "image_zoom": 100,
+            "image_fit": "inherit"
+          }
+        },
+        "product_64yYCL": {
+          "type": "product",
+          "settings": {
+            "product": "red-sports-tee",
+            "image_position": "auto",
+            "image_zoom": 100,
+            "image_fit": "inherit"
+          }
+        },
+        "product_44N8aw": {
+          "type": "product",
+          "settings": {
+            "product": "longsleeve-cotton-top",
+            "image_position": "auto",
+            "image_zoom": 100,
+            "image_fit": "inherit"
+          }
+        }
+      },
+      "block_order": [
+        "product_CGqi8M",
+        "product_izTmgc",
+        "product_KhX8g8",
+        "product_64yYCL",
+        "product_44N8aw"
+      ],
+      "name": "Colección destacada (5 artículos)",
+      "settings": {
+        "label": "ARTICULOS DESTACADOS",
+        "heading": "",
+        "show_secondary_image": true,
+        "image_ratio": "3/4",
+        "image_fit": "cover",
+        "image_radius": 6,
+        "gap": 24,
+        "max_width": 1540,
+        "text_size": 15,
+        "columns_mobile": "2",
+        "bg_color": "#FFFFFF",
+        "media_bg": "#EDEDED",
+        "label_color": "#6C63E8",
+        "title_color": "#1B1B19",
+        "price_color": "#6C63E8",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
+    },
+    "bordaderia_best_seller_LTzJki": {
+      "type": "bordaderia-best-seller",
+      "name": "Best seller",
+      "settings": {
+        "product": "",
+        "label": "Best seller",
+        "heading": "CAMISETAS PERSONALIZADAS",
+        "text": "<p>Algodón premium con bordado de alta densidad diseñado para perdurar. Un equilibrio perfecto entre artesanía tradicional y estética digital.</p>",
+        "show_price": false,
+        "button_label": "Ver producto",
+        "button_link": "",
+        "button_radius": 4,
+        "layout": "left",
+        "image_width": 55,
+        "image_ratio": "3/2",
+        "image_fit": "cover",
+        "image_position_crop": "auto",
+        "image_radius": 6,
+        "gap": 76,
+        "max_width": 1320,
+        "bg_color": "#F7F6F4",
+        "media_bg": "#EDEDED",
+        "label_color": "#6C63E8",
+        "heading_color": "#1B1B19",
+        "text_color": "#6C63E8",
+        "button_bg": "#1A4EE0",
+        "button_text_color": "#FFFFFF",
+        "padding_top": 56,
+        "padding_bottom": 56
+      }
+    },
+    "bordaderia_instagram_HQk69R": {
+      "type": "bordaderia-instagram",
+      "blocks": {
+        "foto_cz8xBG": {
+          "type": "foto",
+          "settings": {
+            "link": "",
+            "caption": "",
+            "image_position": "auto"
+          }
+        },
+        "foto_iq8ahj": {
+          "type": "foto",
+          "settings": {
+            "link": "",
+            "caption": "",
+            "image_position": "auto"
+          }
+        },
+        "foto_J7hirp": {
+          "type": "foto",
+          "settings": {
+            "link": "",
+            "caption": "",
+            "image_position": "auto"
+          }
+        },
+        "foto_bJa3g4": {
+          "type": "foto",
+          "settings": {
+            "link": "",
+            "caption": "",
+            "image_position": "auto"
+          }
+        }
+      },
+      "block_order": [
+        "foto_cz8xBG",
+        "foto_iq8ahj",
+        "foto_J7hirp",
+        "foto_bJa3g4"
+      ],
+      "name": "Feed de Instagram",
+      "settings": {
+        "label": "Síguenos en",
+        "handle": "@LABORDADERIA",
+        "profile_url": "",
+        "show_icon": true,
+        "subheading": "",
+        "columns_desktop": 4,
+        "columns_mobile": "2",
+        "image_ratio": "1/1",
+        "gap": 16,
+        "image_radius": 0,
+        "max_width": 1440,
+        "show_overlay": true,
+        "button_label": "",
+        "button_radius": 0,
+        "bg_color": "#FFFFFF",
+        "media_bg": "#F2F2F2",
+        "label_color": "#6C63E8",
+        "handle_color": "#1A4EE0",
+        "padding_top": 56,
+        "padding_bottom": 56
+      }
+    },
+    "bordaderia_testimonios_iHJzVz": {
+      "type": "bordaderia-testimonios",
+      "blocks": {
+        "testimonio_xkftJq": {
+          "type": "testimonio",
+          "settings": {
+            "rating": 5,
+            "text": "\"La precisión del bordado es increíble. Los detalles más pequeños de mi diseño personalizado quedaron perfectos.\"",
+            "author": "Andrés M.",
+            "meta": ""
+          }
+        },
+        "testimonio_EGkjxR": {
+          "type": "testimonio",
+          "settings": {
+            "rating": 5,
+            "text": "\"La precisión del bordado es increíble. Los detalles más pequeños de mi diseño personalizado quedaron perfectos.\"",
+            "author": "Andrés M.",
+            "meta": ""
+          }
+        },
+        "testimonio_QPTUET": {
+          "type": "testimonio",
+          "settings": {
+            "rating": 5,
+            "text": "\"La precisión del bordado es increíble. Los detalles más pequeños de mi diseño personalizado quedaron perfectos.\"",
+            "author": "Andrés M.",
+            "meta": ""
+          }
+        }
+      },
+      "block_order": [
+        "testimonio_xkftJq",
+        "testimonio_EGkjxR",
+        "testimonio_QPTUET"
+      ],
+      "name": "Comentarios de clientes",
+      "settings": {
+        "label": "",
+        "heading": "",
+        "show_stars": true,
+        "show_empty_stars": false,
+        "star_size": 15,
+        "columns_desktop": 3,
+        "card_padding": 26,
+        "card_radius": 0,
+        "card_border_width": 2,
+        "gap": 24,
+        "text_size": 13,
+        "max_width": 1440,
+        "show_dash": true,
+        "bg_color": "#F7F6F4",
+        "card_bg": "#F7F6F4",
+        "card_border_color": "#6C63E8",
+        "star_color": "#1A4EE0",
+        "star_off_color": "#D6D6D6",
+        "text_color": "#6C63E8",
+        "author_color": "#1B1B19",
+        "label_color": "#6C63E8",
+        "heading_color": "#1B1B19",
+        "padding_top": 56,
+        "padding_bottom": 56
       }
     }
   },
   "order": [
     "featured-collection",
     "custom_liquid_GEatcq",
-    "custom_liquid_qmfKQQ"
+    "custom_liquid_qmfKQQ",
+    "bordaderia_destacados_WRawnc",
+    "bordaderia_best_seller_LTzJki",
+    "bordaderia_instagram_HQk69R",
+    "bordaderia_testimonios_iHJzVz"
   ]
 }
