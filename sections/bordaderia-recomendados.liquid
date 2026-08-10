@@ -1,0 +1,525 @@
+{%- comment -%}
+  ============================================================
+  BORDADERÍA · También te puede interesar
+  Usa las recomendaciones automáticas de Shopify. Si aún no hay
+  datos suficientes, muestra productos de la misma colección.
+  ============================================================
+{%- endcomment -%}
+
+{%- liquid
+  assign limite = section.settings.products_to_show
+
+  assign lista = null
+  assign es_respaldo = false
+
+  if section.settings.source == 'collection'
+    assign coleccion = section.settings.collection | default: product.collections.first
+    assign lista = coleccion.products
+    assign es_respaldo = true
+  elsif recommendations.performed and recommendations.products_count > 0
+    assign lista = recommendations.products
+  else
+    assign coleccion = section.settings.collection | default: product.collections.first
+    assign lista = coleccion.products
+    assign es_respaldo = true
+  endif
+
+  assign enlace_ver_todo = section.settings.view_all_link
+  if enlace_ver_todo == blank
+    assign enlace_ver_todo = coleccion.url | default: routes.all_products_collection_url
+  endif
+
+  assign partes = section.settings.image_ratio | split: '/'
+  assign ratio_w = partes[0] | plus: 0.0
+  assign ratio_h = partes[1] | plus: 0.0
+  if ratio_w <= 0 or ratio_h <= 0
+    assign ratio_w = 1.0
+    assign ratio_h = 1.0
+  endif
+  assign ratio_pct = ratio_h | times: 100.0 | divided_by: ratio_w
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    --brd-rc-bg: {{ section.settings.bg_color }};
+    --brd-rc-media-bg: {{ section.settings.media_bg }};
+    --brd-rc-border: {{ section.settings.border_color }};
+    --brd-rc-title: {{ section.settings.title_color }};
+    --brd-rc-price: {{ section.settings.price_color }};
+    --brd-rc-label: {{ section.settings.label_color }};
+    --brd-rc-gap: {{ section.settings.gap }}px;
+    --brd-rc-pad: {{ ratio_pct }}%;
+    --brd-rc-cols: {{ limite }};
+    --brd-rc-cols-mobile: {{ section.settings.columns_mobile }};
+    --brd-rc-max: {{ section.settings.max_width }}px;
+    --brd-rc-text: {{ section.settings.text_size }}px;
+    --brd-rc-card-border: {{ section.settings.card_border_width }}px;
+    --brd-rc-card-pad: {{ section.settings.card_padding }}px;
+  }
+
+  .brd-rc {
+    box-sizing: border-box;
+    background: var(--brd-rc-bg);
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .brd-rc {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<section
+  class="brd-rc"
+  id="brd-rc-{{ section.id }}"
+  data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ limite }}"
+  data-fetch="{% if section.settings.source == 'recommendations' and recommendations.performed == false %}true{% else %}false{% endif %}"
+>
+  <div class="brd-rc__inner page-width">
+    <div class="brd-rc__head">
+      {%- if section.settings.label != blank -%}
+        <p class="brd-rc__label">{{ section.settings.label | escape }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.view_all_label != blank -%}
+        <a class="brd-rc__all" href="{{ enlace_ver_todo }}">
+          <span>{{ section.settings.view_all_label | escape }}</span>
+          <span aria-hidden="true">&rarr;</span>
+        </a>
+      {%- endif -%}
+    </div>
+
+    <ul class="brd-rc__grid" role="list">
+      {%- assign mostrados = 0 -%}
+      {%- for item in lista -%}
+        {%- if es_respaldo and item.id == product.id -%}
+          {%- continue -%}
+        {%- endif -%}
+        {%- if mostrados >= limite -%}
+          {%- break -%}
+        {%- endif -%}
+        {%- assign mostrados = mostrados | plus: 1 -%}
+        {%- assign foco = item.featured_image.presentation.focal_point | default: 'center center' -%}
+        <li class="brd-rc__item">
+          <a class="brd-rc__card" href="{{ item.url }}">
+            <div class="brd-rc__media">
+              {%- if item.featured_image -%}
+                <img
+                  class="brd-rc__img"
+                  style="object-position: {{ foco }};"
+                  src="{{ item.featured_image | image_url: width: 800 }}"
+                  srcset="
+                    {{ item.featured_image | image_url: width: 400 }} 400w,
+                    {{ item.featured_image | image_url: width: 600 }} 600w,
+                    {{ item.featured_image | image_url: width: 800 }} 800w
+                  "
+                  sizes="(min-width: 990px) 22vw, (min-width: 750px) 30vw, 45vw"
+                  alt="{{ item.featured_image.alt | escape }}"
+                  width="{{ item.featured_image.width }}"
+                  height="{{ item.featured_image.height }}"
+                  loading="lazy"
+                >
+              {%- else -%}
+                {{ 'product-apparel-3' | placeholder_svg_tag: 'brd-rc__placeholder' }}
+              {%- endif -%}
+            </div>
+            <div class="brd-rc__info">
+              <h3 class="brd-rc__title">{{ item.title | escape }}</h3>
+              <p class="brd-rc__price">
+                {%- if item.price_varies -%}
+                  Desde {{ item.price_min | money }}
+                {%- else -%}
+                  {{ item.price | money }}
+                {%- endif -%}
+              </p>
+            </div>
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</section>
+
+<style>
+  #shopify-section-{{ section.id }} .brd-rc,
+  #shopify-section-{{ section.id }} .brd-rc *,
+  #shopify-section-{{ section.id }} .brd-rc *::before,
+  #shopify-section-{{ section.id }} .brd-rc *::after {
+    box-sizing: border-box;
+  }
+
+  #shopify-section-{{ section.id }} .brd-rc__inner {
+    max-width: var(--brd-rc-max);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #shopify-section-{{ section.id }} .brd-rc__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+
+  #shopify-section-{{ section.id }} .brd-rc__label {
+    margin: 0;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brd-rc-label);
+  }
+
+  #shopify-section-{{ section.id }} .brd-rc__all {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--brd-rc-label);
+    text-decoration: none;
+  }
+
+  #shopify-section-{{ section.id }} .brd-rc__all:hover {
+    color: var(--brd-rc-title);
+  }
+
+  #shopify-section-{{ section.id }} .brd-rc__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--brd-rc-cols), minmax(0, 1fr));
+    gap: var(--brd-rc-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  #shopify-section-{{ section.id }} .brd-rc__item {
+    min-width: 0;
+    display: flex;
+  }
+
+  #shopify-section-{{ section.id }} .brd-rc__card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: var(--brd-rc-card-pad);
+    border: var(--brd-rc-card-border) solid var(--brd-rc-border);
+    border-radius: 2px;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  #shopify-section-{{ section.id }} .brd-rc__media {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-top: var(--brd-rc-pad);
+    overflow: hidden;
+    background: var(--brd-rc-media-bg);
+  }
+
+  #shopify-section-{{ section.id }} .brd-rc__img,
+  #shopify-section-{{ section.id }} .brd-rc__placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    max-width: none;
+    min-height: 0;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    object-fit: cover;
+    object-position: center center;
+    transition: transform 0.5s ease;
+  }
+
+  #shopify-section-{{ section.id }} .brd-rc__placeholder {
+    fill: #C9C9C9;
+  }
+
+  #shopify-section-{{ section.id }} .brd-rc__card:hover .brd-rc__img {
+    transform: scale(1.04);
+  }
+
+  #shopify-section-{{ section.id }} .brd-rc__info {
+    padding-top: 10px;
+  }
+
+  #shopify-section-{{ section.id }} .brd-rc__title {
+    margin: 0;
+    font-size: var(--brd-rc-text);
+    font-weight: 500;
+    line-height: 1.35;
+    color: var(--brd-rc-title);
+  }
+
+  #shopify-section-{{ section.id }} .brd-rc__price {
+    margin: 4px 0 0;
+    font-size: calc(var(--brd-rc-text) - 1px);
+    font-weight: 500;
+    color: var(--brd-rc-price);
+  }
+
+  @media screen and (max-width: 989px) {
+    #shopify-section-{{ section.id }} .brd-rc__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .brd-rc__grid {
+      grid-template-columns: repeat(var(--brd-rc-cols-mobile), minmax(0, 1fr));
+      gap: 12px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #shopify-section-{{ section.id }} .brd-rc__img {
+      transition: none;
+    }
+
+    #shopify-section-{{ section.id }} .brd-rc__card:hover .brd-rc__img {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    var raiz = document.getElementById('brd-rc-{{ section.id }}');
+    if (!raiz || raiz.dataset.fetch !== 'true') return;
+
+    fetch(raiz.dataset.url)
+      .then(function (respuesta) {
+        return respuesta.text();
+      })
+      .then(function (html) {
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        var nueva = doc.querySelector('.brd-rc__grid');
+        var actual = raiz.querySelector('.brd-rc__grid');
+        // Solo sustituimos si Shopify devolvió recomendaciones de verdad.
+        if (nueva && actual && nueva.querySelector('.brd-rc__item')) {
+          actual.innerHTML = nueva.innerHTML;
+        }
+      })
+      .catch(function () {
+        /* Si falla, se queda la lista de respaldo ya renderizada. */
+      });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Producto · Recomendados",
+  "tag": "section",
+  "class": "brd-rc-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Etiqueta",
+      "default": "También te puede interesar"
+    },
+    {
+      "type": "text",
+      "id": "view_all_label",
+      "label": "Texto del enlace de la derecha",
+      "info": "Déjalo vacío para ocultarlo.",
+      "default": "Ver todo"
+    },
+    {
+      "type": "url",
+      "id": "view_all_link",
+      "label": "Destino del enlace",
+      "info": "Vacío: la colección del producto, o todos los productos."
+    },
+    {
+      "type": "header",
+      "content": "Qué productos mostrar"
+    },
+    {
+      "type": "select",
+      "id": "source",
+      "label": "Origen",
+      "options": [
+        { "value": "recommendations", "label": "Recomendaciones automáticas de Shopify" },
+        { "value": "collection", "label": "Una colección concreta" }
+      ],
+      "info": "Las recomendaciones automáticas necesitan histórico de ventas; mientras tanto se muestran productos de la misma colección.",
+      "default": "recommendations"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Colección",
+      "info": "Se usa como respaldo o como origen fijo."
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "label": "Número de productos",
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columnas en móvil",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "header",
+      "content": "Tarjetas"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Proporción de la imagen",
+      "options": [
+        { "value": "1/1", "label": "Cuadrada (1:1)" },
+        { "value": "4/5", "label": "Vertical (4:5)" },
+        { "value": "3/4", "label": "Vertical (3:4)" }
+      ],
+      "default": "1/1"
+    },
+    {
+      "type": "range",
+      "id": "card_border_width",
+      "min": 0,
+      "max": 2,
+      "step": 1,
+      "unit": "px",
+      "label": "Grosor del borde de la tarjeta",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "card_padding",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Relleno de la tarjeta",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Separación entre tarjetas",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamaño del nombre",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 900,
+      "max": 1800,
+      "step": 20,
+      "unit": "px",
+      "label": "Ancho del contenido",
+      "default": 1240
+    },
+    {
+      "type": "header",
+      "content": "Colores"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Fondo",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "media_bg",
+      "label": "Fondo de la imagen",
+      "default": "#F2F2F2"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Bordes",
+      "default": "#E3E3E1"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Nombre del producto",
+      "default": "#1B1B19"
+    },
+    {
+      "type": "color",
+      "id": "price_color",
+      "label": "Precio",
+      "default": "#6C63E8"
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Etiqueta y enlace",
+      "default": "#8A8A86"
+    },
+    {
+      "type": "header",
+      "content": "Espaciado"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Espacio superior",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Espacio inferior",
+      "default": 64
+    }
+  ],
+  "presets": [
+    {
+      "name": "Producto · Recomendados"
+    }
+  ]
+}
+{% endschema %}

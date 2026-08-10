@@ -9,108 +9,111 @@
  */
 {
   "sections": {
-    "main": {
-      "type": "main-product",
+    "producto_principal": {
+      "type": "bordaderia-producto",
       "blocks": {
-        "vendor": {
-          "type": "text",
+        "guia_tallas": {
+          "type": "desplegable",
           "settings": {
-            "text": "{{ product.vendor }}",
-            "text_style": "uppercase"
-          }
-        },
-        "title": {
-          "type": "title",
-          "settings": {}
-        },
-        "price": {
-          "type": "price",
-          "settings": {}
-        },
-        "variant_picker": {
-          "type": "variant_picker",
-          "settings": {
-            "picker_type": "button",
-            "swatch_shape": "circle"
-          }
-        },
-        "quantity_selector": {
-          "type": "quantity_selector",
-          "settings": {}
-        },
-        "buy_buttons": {
-          "type": "buy_buttons",
-          "settings": {
-            "show_dynamic_checkout": true,
-            "show_gift_card_recipient": true
-          }
-        },
-        "description": {
-          "type": "description",
-          "settings": {}
-        },
-        "share": {
-          "type": "share",
-          "settings": {
-            "share_label": "Share"
+            "heading": "Guía de tallas",
+            "content": "<p>Prenda de corte holgado. Si dudas entre dos tallas, elige la menor para un ajuste más ceñido.</p><p>S · pecho 96 cm · largo 68 cm<br/>M · pecho 104 cm · largo 71 cm<br/>L · pecho 112 cm · largo 74 cm<br/>XL · pecho 120 cm · largo 77 cm</p>",
+            "open": false
           }
         }
       },
       "block_order": [
-        "vendor",
-        "title",
-        "price",
-        "variant_picker",
-        "quantity_selector",
-        "buy_buttons",
-        "description",
-        "share"
+        "guia_tallas"
       ],
       "settings": {
-        "enable_sticky_info": true,
-        "color_scheme": "scheme-1",
-        "media_size": "medium",
-        "constrain_to_viewport": true,
-        "media_fit": "contain",
-        "gallery_layout": "stacked",
-        "mobile_thumbnails": "hide",
-        "media_position": "left",
-        "image_zoom": "lightbox",
-        "hide_variants": false,
-        "enable_video_looping": false,
-        "padding_top": 24,
-        "padding_bottom": 24
-      }
-    },
-    "related-products": {
-      "type": "related-products",
-      "settings": {
-        "heading": "You may also like",
-        "heading_size": "h2",
-        "products_to_show": 4,
-        "columns_desktop": 4,
-        "columns_mobile": "2",
-        "color_scheme": "scheme-1",
-        "image_ratio": "adapt",
-        "image_shape": "default",
-        "show_secondary_image": false,
+        "image_width": 50,
+        "image_ratio": "1/1",
+        "image_fit": "cover",
+        "image_radius": 2,
+        "show_thumbs": true,
+        "thumbs_limit": 4,
+        "thumb_size": 74,
         "show_vendor": false,
-        "show_rating": false,
-        "padding_top": 36,
-        "padding_bottom": 68
+        "show_description": true,
+        "show_quantity": false,
+        "title_size": 20,
+        "button_label": "Añadir al carrito",
+        "sold_out_label": "Agotado",
+        "unavailable_label": "No disponible",
+        "button_arrow": true,
+        "button_radius": 2,
+        "show_payment_button": false,
+        "gap": 48,
+        "max_width": 1240,
+        "bg_color": "#FFFFFF",
+        "media_bg": "#F2F2F2",
+        "border_color": "#E3E3E1",
+        "title_color": "#1B2A63",
+        "price_color": "#1B1B19",
+        "text_color": "#5A5A57",
+        "ui_color": "#8A8A86",
+        "button_bg": "#1A4EE0",
+        "button_text": "#FFFFFF",
+        "padding_top": 40,
+        "padding_bottom": 48
       }
     },
-    "disclosures": {
-      "type": "disclosures",
+    "producto_panel": {
+      "type": "bordaderia-panel-tecnico",
       "settings": {
-        "padding_top": 36,
-        "padding_bottom": 0
+        "line1": "Precisión Digital.",
+        "line2": "Textura Analógica.",
+        "text": "<p>Nuestra técnica de bordado fusiona el diseño generado por ordenador con maquinaria industrial calibrada al milímetro. Cada hilo se traza meticulosamente para asegurar líneas nítidas y una densidad perfecta, dando como resultado un grafismo que no solo se ve, sino que se siente. El contraste entre el algodón y el relieve estructurado del hilo crea una estética minimalista y contundente.</p>",
+        "use_product_image": true,
+        "layout": "right",
+        "image_width": 45,
+        "image_ratio": "1/1",
+        "image_radius": 0,
+        "panel_padding": 40,
+        "panel_radius": 2,
+        "border_width": 1,
+        "gap": 48,
+        "max_width": 1240,
+        "heading_size": 18,
+        "text_size": 12,
+        "page_bg": "#FFFFFF",
+        "panel_bg": "#F7F6F4",
+        "border_color": "#E5E3DF",
+        "media_bg": "#EDEDED",
+        "line1_color": "#1B2A63",
+        "line2_color": "#1A4EE0",
+        "text_color": "#5A5A57",
+        "padding_top": 32,
+        "padding_bottom": 32
+      }
+    },
+    "producto_recomendados": {
+      "type": "bordaderia-recomendados",
+      "settings": {
+        "label": "También te puede interesar",
+        "view_all_label": "Ver todo",
+        "source": "recommendations",
+        "products_to_show": 4,
+        "columns_mobile": "2",
+        "image_ratio": "1/1",
+        "card_border_width": 0,
+        "card_padding": 0,
+        "gap": 16,
+        "text_size": 12,
+        "max_width": 1240,
+        "bg_color": "#FFFFFF",
+        "media_bg": "#F2F2F2",
+        "border_color": "#E3E3E1",
+        "title_color": "#1B1B19",
+        "price_color": "#6C63E8",
+        "label_color": "#8A8A86",
+        "padding_top": 32,
+        "padding_bottom": 64
       }
     }
   },
   "order": [
-    "main",
-    "disclosures",
-    "related-products"
+    "producto_principal",
+    "producto_panel",
+    "producto_recomendados"
   ]
 }
