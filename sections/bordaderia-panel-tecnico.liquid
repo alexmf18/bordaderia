@@ -42,6 +42,12 @@
     --brd-pt-col-txt: {{ col_txt }}fr;
     --brd-pt-heading-size: {{ section.settings.heading_size }}px;
     --brd-pt-text-size: {{ section.settings.text_size }}px;
+    --brd-pt-tracking: {{ section.settings.heading_tracking | divided_by: 100.0 }}em;
+    --brd-pt-align: {{ section.settings.text_align }};
+    --brd-pt-valign: {{ section.settings.vertical_align }};
+    --brd-pt-eyebrow: {{ section.settings.eyebrow_color }};
+    --brd-pt-dato-label: {{ section.settings.spec_label_color }};
+    --brd-pt-dato-value: {{ section.settings.spec_value_color }};
   }
 
   .brd-pt {
@@ -63,6 +69,10 @@
   <div class="brd-pt__inner page-width">
     <div class="brd-pt__panel brd-pt__panel--{{ section.settings.layout }}">
       <div class="brd-pt__text-col">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="brd-pt__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+
         {%- if section.settings.line1 != blank or section.settings.line2 != blank -%}
           <h2 class="brd-pt__heading">
             {%- if section.settings.line1 != blank -%}
@@ -78,8 +88,19 @@
           <div class="brd-pt__text">{{ section.settings.text }}</div>
         {%- endif -%}
 
+        {%- if section.blocks.size > 0 -%}
+          <dl class="brd-pt__datos">
+            {%- for block in section.blocks -%}
+              <div class="brd-pt__dato" {{ block.shopify_attributes }}>
+                <dt class="brd-pt__dato-label">{{ block.settings.label | escape }}</dt>
+                <dd class="brd-pt__dato-value">{{ block.settings.value | escape }}</dd>
+              </div>
+            {%- endfor -%}
+          </dl>
+        {%- endif -%}
+
         {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
-          <a class="brd-pt__btn" href="{{ section.settings.button_link }}">
+          <a class="brd-pt__btn brd-pt__btn--{{ section.settings.button_style }}" href="{{ section.settings.button_link }}">
             {{- section.settings.button_label | escape -}}
           </a>
         {%- endif -%}
@@ -125,11 +146,58 @@
     margin-right: auto;
   }
 
+  {%- if section.settings.full_width -%}
+    #shopify-section-{{ section.id }} .brd-pt__inner {
+      max-width: none;
+      padding-left: 0;
+      padding-right: 0;
+    }
+  {%- endif -%}
+
+  #shopify-section-{{ section.id }} .brd-pt__text-col {
+    text-align: var(--brd-pt-align);
+  }
+
+  #shopify-section-{{ section.id }} .brd-pt__eyebrow {
+    margin: 0 0 10px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brd-pt-eyebrow);
+  }
+
+  #shopify-section-{{ section.id }} .brd-pt__datos {
+    display: grid;
+    grid-template-columns: repeat({{ section.settings.spec_columns }}, minmax(0, 1fr));
+    gap: 14px 20px;
+    margin: 22px 0 0;
+    padding-top: 18px;
+    border-top: 1px solid var(--brd-pt-border);
+  }
+
+  #shopify-section-{{ section.id }} .brd-pt__dato-label {
+    margin: 0 0 3px;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--brd-pt-dato-label);
+  }
+
+  #shopify-section-{{ section.id }} .brd-pt__dato-value {
+    margin: 0;
+    font-size: calc(var(--brd-pt-text-size) + 1px);
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--brd-pt-dato-value);
+  }
+
   #shopify-section-{{ section.id }} .brd-pt__panel {
     display: grid;
     grid-template-columns: var(--brd-pt-col-txt) var(--brd-pt-col-img);
     gap: var(--brd-pt-gap);
-    align-items: center;
+    align-items: var(--brd-pt-valign);
     padding: var(--brd-pt-panel-pad);
     background: var(--brd-pt-panel-bg);
     border: {{ section.settings.border_width }}px solid var(--brd-pt-border);
@@ -152,9 +220,10 @@
   #shopify-section-{{ section.id }} .brd-pt__heading {
     margin: 0;
     font-size: var(--brd-pt-heading-size);
-    font-weight: 700;
+    font-weight: {{ section.settings.heading_weight }};
     line-height: 1.3;
-    letter-spacing: -0.01em;
+    letter-spacing: var(--brd-pt-tracking);
+    {% if section.settings.heading_uppercase %}text-transform: uppercase;{% endif %}
   }
 
   #shopify-section-{{ section.id }} .brd-pt__line {
@@ -165,7 +234,7 @@
   #shopify-section-{{ section.id }} .brd-pt__line--2 { color: var(--brd-pt-line2); }
 
   #shopify-section-{{ section.id }} .brd-pt__text {
-    max-width: 52ch;
+    max-width: {{ section.settings.text_measure }}ch;
     margin-top: 16px;
     font-size: var(--brd-pt-text-size);
     line-height: 1.8;
@@ -190,9 +259,27 @@
     transition: background-color 0.25s ease, color 0.25s ease;
   }
 
-  #shopify-section-{{ section.id }} .brd-pt__btn:hover {
+  #shopify-section-{{ section.id }} .brd-pt__btn--solid {
     background: var(--brd-pt-line2);
     color: var(--brd-pt-panel-bg);
+  }
+
+  #shopify-section-{{ section.id }} .brd-pt__btn--outline:hover,
+  #shopify-section-{{ section.id }} .brd-pt__btn--outline:focus-visible {
+    background: var(--brd-pt-line2);
+    color: var(--brd-pt-panel-bg);
+  }
+
+  #shopify-section-{{ section.id }} .brd-pt__btn--solid:hover,
+  #shopify-section-{{ section.id }} .brd-pt__btn--solid:focus-visible {
+    opacity: 0.86;
+  }
+
+  #shopify-section-{{ section.id }} .brd-pt__btn--texto {
+    padding: 0;
+    border: 0;
+    border-bottom: 1px solid currentColor;
+    border-radius: 0;
   }
 
   #shopify-section-{{ section.id }} .brd-pt__media {
@@ -262,6 +349,12 @@
   "settings": [
     {
       "type": "text",
+      "id": "eyebrow",
+      "label": "Etiqueta superior",
+      "info": "Opcional, encima del titular."
+    },
+    {
+      "type": "text",
       "id": "line1",
       "label": "Titular · primera línea",
       "default": "Precisión Digital."
@@ -288,6 +381,17 @@
       "type": "url",
       "id": "button_link",
       "label": "Enlace del botón"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Estilo del botón",
+      "options": [
+        { "value": "outline", "label": "Contorno" },
+        { "value": "solid", "label": "Relleno" },
+        { "value": "texto", "label": "Solo texto subrayado" }
+      ],
+      "default": "outline"
     },
     {
       "type": "header",
@@ -402,6 +506,33 @@
       "default": 1240
     },
     {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Panel a todo el ancho",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "vertical_align",
+      "label": "Alineación vertical",
+      "options": [
+        { "value": "center", "label": "Centrado" },
+        { "value": "start", "label": "Arriba" },
+        { "value": "stretch", "label": "Estirar a la misma altura" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "text_align",
+      "label": "Alineación del texto",
+      "options": [
+        { "value": "left", "label": "Izquierda" },
+        { "value": "center", "label": "Centrado" }
+      ],
+      "default": "left"
+    },
+    {
       "type": "header",
       "content": "Tamaños"
     },
@@ -424,6 +555,57 @@
       "unit": "px",
       "label": "Tamaño del texto",
       "default": 12
+    },
+    {
+      "type": "range",
+      "id": "text_measure",
+      "min": 30,
+      "max": 80,
+      "step": 2,
+      "label": "Longitud de línea del texto",
+      "info": "Caracteres por línea. Menos = columna más estrecha.",
+      "default": 52
+    },
+    {
+      "type": "select",
+      "id": "heading_weight",
+      "label": "Grosor del titular",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medio" },
+        { "value": "600", "label": "Seminegrita" },
+        { "value": "700", "label": "Negrita" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "checkbox",
+      "id": "heading_uppercase",
+      "label": "Titular en mayúsculas",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "heading_tracking",
+      "min": -3,
+      "max": 20,
+      "step": 1,
+      "label": "Espaciado entre letras del titular",
+      "info": "En centésimas de em.",
+      "default": -1
+    },
+    {
+      "type": "header",
+      "content": "Datos técnicos"
+    },
+    {
+      "type": "range",
+      "id": "spec_columns",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "label": "Columnas de la lista de datos",
+      "default": 2
     },
     {
       "type": "header",
@@ -472,6 +654,24 @@
       "default": "#5A5A57"
     },
     {
+      "type": "color",
+      "id": "eyebrow_color",
+      "label": "Etiqueta superior",
+      "default": "#8A8A86"
+    },
+    {
+      "type": "color",
+      "id": "spec_label_color",
+      "label": "Nombre del dato",
+      "default": "#8A8A86"
+    },
+    {
+      "type": "color",
+      "id": "spec_value_color",
+      "label": "Valor del dato",
+      "default": "#1B2A63"
+    },
+    {
       "type": "header",
       "content": "Espaciado"
     },
@@ -496,6 +696,27 @@
       "default": 32
     }
   ],
+  "blocks": [
+    {
+      "type": "dato",
+      "name": "Dato técnico",
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Nombre",
+          "default": "Densidad"
+        },
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Valor",
+          "default": "12 000 puntadas"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 8,
   "presets": [
     {
       "name": "Panel técnico"

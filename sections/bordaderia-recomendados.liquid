@@ -49,8 +49,13 @@
     --brd-rc-label: {{ section.settings.label_color }};
     --brd-rc-gap: {{ section.settings.gap }}px;
     --brd-rc-pad: {{ ratio_pct }}%;
-    --brd-rc-cols: {{ limite }};
+    --brd-rc-cols: {{ section.settings.columns_desktop }};
     --brd-rc-cols-mobile: {{ section.settings.columns_mobile }};
+    --brd-rc-heading-size: {{ section.settings.heading_size }}px;
+    --brd-rc-heading: {{ section.settings.heading_color }};
+    --brd-rc-badge-bg: {{ section.settings.badge_bg }};
+    --brd-rc-badge-text: {{ section.settings.badge_text }};
+    --brd-rc-card-align: {{ section.settings.card_align }};
     --brd-rc-max: {{ section.settings.max_width }}px;
     --brd-rc-text: {{ section.settings.text_size }}px;
     --brd-rc-card-border: {{ section.settings.card_border_width }}px;
@@ -79,10 +84,16 @@
   data-fetch="{% if section.settings.source == 'recommendations' and recommendations.performed == false %}true{% else %}false{% endif %}"
 >
   <div class="brd-rc__inner page-width">
-    <div class="brd-rc__head">
-      {%- if section.settings.label != blank -%}
-        <p class="brd-rc__label">{{ section.settings.label | escape }}</p>
-      {%- endif -%}
+    <div class="brd-rc__head brd-rc__head--{{ section.settings.header_align }}">
+      <div class="brd-rc__head-text">
+        {%- if section.settings.label != blank -%}
+          <p class="brd-rc__label">{{ section.settings.label | escape }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.heading != blank -%}
+          <h2 class="brd-rc__heading">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+      </div>
 
       {%- if section.settings.view_all_label != blank -%}
         <a class="brd-rc__all" href="{{ enlace_ver_todo }}">
@@ -92,7 +103,7 @@
       {%- endif -%}
     </div>
 
-    <ul class="brd-rc__grid" role="list">
+    <ul class="brd-rc__grid {% if section.settings.mobile_carousel %}brd-rc__grid--carrusel{% endif %}" role="list">
       {%- assign mostrados = 0 -%}
       {%- for item in lista -%}
         {%- if es_respaldo and item.id == product.id -%}
@@ -122,17 +133,48 @@
                   height="{{ item.featured_image.height }}"
                   loading="lazy"
                 >
+                {%- if section.settings.show_secondary_image and item.images[1] != blank -%}
+                  <img
+                    class="brd-rc__img brd-rc__img--alt"
+                    src="{{ item.images[1] | image_url: width: 800 }}"
+                    srcset="
+                      {{ item.images[1] | image_url: width: 400 }} 400w,
+                      {{ item.images[1] | image_url: width: 600 }} 600w,
+                      {{ item.images[1] | image_url: width: 800 }} 800w
+                    "
+                    sizes="(min-width: 990px) 22vw, (min-width: 750px) 30vw, 45vw"
+                    alt=""
+                    aria-hidden="true"
+                    width="{{ item.images[1].width }}"
+                    height="{{ item.images[1].height }}"
+                    loading="lazy"
+                  >
+                {%- endif -%}
               {%- else -%}
                 {{ 'product-apparel-3' | placeholder_svg_tag: 'brd-rc__placeholder' }}
               {%- endif -%}
+
+              {%- if section.settings.show_badges -%}
+                {%- if item.available == false -%}
+                  <span class="brd-rc__badge">{{ section.settings.out_label | escape }}</span>
+                {%- elsif item.compare_at_price > item.price -%}
+                  <span class="brd-rc__badge">{{ section.settings.sale_label | escape }}</span>
+                {%- endif -%}
+              {%- endif -%}
             </div>
             <div class="brd-rc__info">
+              {%- if section.settings.show_vendor and item.vendor != blank -%}
+                <p class="brd-rc__vendor">{{ item.vendor | escape }}</p>
+              {%- endif -%}
               <h3 class="brd-rc__title">{{ item.title | escape }}</h3>
               <p class="brd-rc__price">
                 {%- if item.price_varies -%}
                   Desde {{ item.price_min | money }}
                 {%- else -%}
                   {{ item.price | money }}
+                {%- endif -%}
+                {%- if section.settings.show_compare_at and item.compare_at_price > item.price -%}
+                  <s class="brd-rc__compare">{{ item.compare_at_price | money }}</s>
                 {%- endif -%}
               </p>
             </div>
@@ -163,6 +205,67 @@
     justify-content: space-between;
     gap: 16px;
     margin-bottom: 18px;
+  }
+
+  #shopify-section-{{ section.id }} .brd-rc__head--center {
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    gap: 8px;
+  }
+
+  #shopify-section-{{ section.id }} .brd-rc__head--left {
+    justify-content: flex-start;
+    gap: 20px;
+  }
+
+  #shopify-section-{{ section.id }} .brd-rc__heading {
+    margin: 4px 0 0;
+    font-size: var(--brd-rc-heading-size);
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: var(--brd-rc-heading);
+  }
+
+  #shopify-section-{{ section.id }} .brd-rc__vendor {
+    margin: 0 0 3px;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--brd-rc-label);
+  }
+
+  #shopify-section-{{ section.id }} .brd-rc__badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 2;
+    padding: 3px 7px;
+    border-radius: 2px;
+    background: var(--brd-rc-badge-bg);
+    color: var(--brd-rc-badge-text);
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    line-height: 1.3;
+  }
+
+  #shopify-section-{{ section.id }} .brd-rc__img--alt {
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+
+  #shopify-section-{{ section.id }} .brd-rc__card:hover .brd-rc__img--alt,
+  #shopify-section-{{ section.id }} .brd-rc__card:focus-visible .brd-rc__img--alt {
+    opacity: 1;
+  }
+
+  #shopify-section-{{ section.id }} .brd-rc__compare {
+    margin-left: 6px;
+    opacity: 0.55;
   }
 
   #shopify-section-{{ section.id }} .brd-rc__label {
@@ -256,6 +359,7 @@
 
   #shopify-section-{{ section.id }} .brd-rc__info {
     padding-top: 10px;
+    text-align: var(--brd-rc-card-align);
   }
 
   #shopify-section-{{ section.id }} .brd-rc__title {
@@ -283,6 +387,25 @@
     #shopify-section-{{ section.id }} .brd-rc__grid {
       grid-template-columns: repeat(var(--brd-rc-cols-mobile), minmax(0, 1fr));
       gap: 12px;
+    }
+
+    /* carrusel: desplazamiento horizontal con anclaje */
+    #shopify-section-{{ section.id }} .brd-rc__grid--carrusel {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-bottom: 4px;
+    }
+
+    #shopify-section-{{ section.id }} .brd-rc__grid--carrusel::-webkit-scrollbar {
+      display: none;
+    }
+
+    #shopify-section-{{ section.id }} .brd-rc__grid--carrusel .brd-rc__item {
+      flex: 0 0 {{ section.settings.carousel_width }}%;
+      scroll-snap-align: start;
     }
   }
 
@@ -335,6 +458,33 @@
     },
     {
       "type": "text",
+      "id": "heading",
+      "label": "Título",
+      "info": "Opcional, debajo de la etiqueta."
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 14,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Tamaño del título",
+      "default": 22
+    },
+    {
+      "type": "select",
+      "id": "header_align",
+      "label": "Disposición de la cabecera",
+      "options": [
+        { "value": "split", "label": "Etiqueta a la izquierda, enlace a la derecha" },
+        { "value": "center", "label": "Todo centrado" },
+        { "value": "left", "label": "Todo a la izquierda" }
+      ],
+      "default": "split"
+    },
+    {
+      "type": "text",
       "id": "view_all_label",
       "label": "Texto del enlace de la derecha",
       "info": "Déjalo vacío para ocultarlo.",
@@ -377,6 +527,15 @@
       "default": 4
     },
     {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "label": "Columnas en escritorio",
+      "default": 4
+    },
+    {
       "type": "select",
       "id": "columns_mobile",
       "label": "Columnas en móvil",
@@ -387,8 +546,71 @@
       "default": "2"
     },
     {
+      "type": "checkbox",
+      "id": "mobile_carousel",
+      "label": "Carrusel deslizable en móvil",
+      "info": "Sustituye la cuadrícula por un carrusel horizontal.",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "carousel_width",
+      "min": 40,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "label": "Ancho de cada tarjeta en el carrusel",
+      "default": 60
+    },
+    {
       "type": "header",
       "content": "Tarjetas"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_secondary_image",
+      "label": "Segunda imagen al pasar el cursor",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Mostrar la marca",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_compare_at",
+      "label": "Mostrar el precio tachado en rebajas",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badges",
+      "label": "Mostrar etiqueta de agotado o rebaja",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "out_label",
+      "label": "Texto de \"agotado\"",
+      "default": "Agotado"
+    },
+    {
+      "type": "text",
+      "id": "sale_label",
+      "label": "Texto de \"rebaja\"",
+      "default": "Oferta"
+    },
+    {
+      "type": "select",
+      "id": "card_align",
+      "label": "Alineación del texto",
+      "options": [
+        { "value": "left", "label": "Izquierda" },
+        { "value": "center", "label": "Centrado" }
+      ],
+      "default": "left"
     },
     {
       "type": "select",
@@ -490,6 +712,24 @@
       "id": "label_color",
       "label": "Etiqueta y enlace",
       "default": "#8A8A86"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Título",
+      "default": "#1B1B19"
+    },
+    {
+      "type": "color",
+      "id": "badge_bg",
+      "label": "Fondo de la etiqueta",
+      "default": "#1B1B19"
+    },
+    {
+      "type": "color",
+      "id": "badge_text",
+      "label": "Texto de la etiqueta",
+      "default": "#FFFFFF"
     },
     {
       "type": "header",
