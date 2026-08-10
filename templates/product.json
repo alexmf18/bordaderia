@@ -64,9 +64,7 @@
           }
         }
       },
-      "block_order": [
-        "guia_tallas"
-      ],
+      "block_order": ["guia_tallas"],
       "settings": {
         "image_width": 50,
         "image_ratio": "1/1",
@@ -152,12 +150,34 @@
         "padding_top": 32,
         "padding_bottom": 64
       }
+    },
+    "bordaderia_recomendados_YBMBLk": {
+      "type": "bordaderia-recomendados",
+      "name": "Producto · Recomendados",
+      "settings": {
+        "label": "También te puede interesar",
+        "view_all_label": "Ver todo",
+        "view_all_link": "",
+        "source": "recommendations",
+        "collection": "frontpage",
+        "products_to_show": 4,
+        "columns_mobile": "2",
+        "image_ratio": "1/1",
+        "card_border_width": 0,
+        "card_padding": 0,
+        "gap": 16,
+        "text_size": 12,
+        "max_width": 1240,
+        "bg_color": "#FFFFFF",
+        "media_bg": "#F2F2F2",
+        "border_color": "#E3E3E1",
+        "title_color": "#1B1B19",
+        "price_color": "#6C63E8",
+        "label_color": "#8A8A86",
+        "padding_top": 32,
+        "padding_bottom": 64
+      }
     }
   },
-  "order": [
-    "main",
-    "producto_principal",
-    "producto_panel",
-    "producto_recomendados"
-  ]
+  "order": ["main", "related-products"]
 }
