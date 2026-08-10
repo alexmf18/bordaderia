@@ -28,7 +28,7 @@
     --mq-sep-color: {{ section.settings.sep_color }};
     --mq-alto: {{ section.settings.altura }}px;
     --mq-fuente: {{ section.settings.font_size }}px;
-    --mq-tracking: {{ section.settings.tracking }}em;
+    --mq-tracking: {{ section.settings.tracking | divided_by: 100.0 }}em;
     --mq-velocidad: {{ section.settings.velocidad }}s;
     --mq-espacio: {{ section.settings.espacio }}px;
     --mq-desplazamiento: -{{ desplazamiento }}%;
@@ -227,11 +227,11 @@
       "type": "range",
       "id": "tracking",
       "min": 0,
-      "max": 0.3,
-      "step": 0.02,
-      "unit": "em",
+      "max": 30,
+      "step": 2,
       "label": "Espaciado entre letras",
-      "default": 0.16
+      "info": "En centésimas de em. 16 equivale a 0.16em.",
+      "default": 16
     },
     {
       "type": "range",

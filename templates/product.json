@@ -31,7 +31,7 @@
         "image_radius": 2,
         "show_thumbs": true,
         "thumbs_limit": 4,
-        "thumb_size": 74,
+        "thumb_size": 76,
         "show_vendor": false,
         "show_description": true,
         "show_quantity": false,
