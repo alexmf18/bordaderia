@@ -1,0 +1,259 @@
+{%- comment -%}
+  ============================================================
+  BORDADERÍA · Cabecera del catálogo
+  Título y descripción centrados sobre la rejilla de productos.
+  Por defecto toma el nombre y la descripción de la colección.
+  ============================================================
+{%- endcomment -%}
+
+{%- liquid
+  assign titulo = section.settings.heading
+  if titulo == blank
+    assign titulo = collection.title
+  endif
+
+  assign descripcion = section.settings.text
+  if descripcion == blank
+    assign descripcion = collection.description
+  endif
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    --brd-ch-bg: {{ section.settings.bg_color }};
+    --brd-ch-heading: {{ section.settings.heading_color }};
+    --brd-ch-text: {{ section.settings.text_color }};
+    --brd-ch-heading-size: {{ section.settings.heading_size }}px;
+    --brd-ch-text-size: {{ section.settings.text_size }}px;
+    --brd-ch-text-max: {{ section.settings.text_max_width }}px;
+    --brd-ch-align: {{ section.settings.align }};
+  }
+
+  .brd-ch {
+    box-sizing: border-box;
+    background: var(--brd-ch-bg);
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .brd-ch {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<section class="brd-ch">
+  <div class="brd-ch__inner page-width">
+    {%- if section.settings.label != blank -%}
+      <p class="brd-ch__label">{{ section.settings.label | escape }}</p>
+    {%- endif -%}
+
+    {%- if titulo != blank -%}
+      <h1 class="brd-ch__heading">{{ titulo | escape }}</h1>
+    {%- endif -%}
+
+    {%- if descripcion != blank -%}
+      <div class="brd-ch__text">{{ descripcion }}</div>
+    {%- endif -%}
+  </div>
+</section>
+
+<style>
+  #shopify-section-{{ section.id }} .brd-ch,
+  #shopify-section-{{ section.id }} .brd-ch *,
+  #shopify-section-{{ section.id }} .brd-ch *::before,
+  #shopify-section-{{ section.id }} .brd-ch *::after {
+    box-sizing: border-box;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ch__inner {
+    max-width: {{ section.settings.max_width }}px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: var(--brd-ch-align);
+  }
+
+  #shopify-section-{{ section.id }} .brd-ch__label {
+    margin: 0 0 10px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brd-ch-text);
+  }
+
+  #shopify-section-{{ section.id }} .brd-ch__heading {
+    margin: 0;
+    font-size: var(--brd-ch-heading-size);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--brd-ch-heading);
+  }
+
+  #shopify-section-{{ section.id }} .brd-ch__text {
+    max-width: var(--brd-ch-text-max);
+    margin: 16px auto 0;
+    font-size: var(--brd-ch-text-size);
+    line-height: 1.7;
+    color: var(--brd-ch-text);
+  }
+
+  #shopify-section-{{ section.id }} .brd-ch__text > *:first-child {
+    margin-top: 0;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ch__text > *:last-child {
+    margin-bottom: 0;
+  }
+
+  {%- if section.settings.align != 'center' -%}
+    #shopify-section-{{ section.id }} .brd-ch__text {
+      margin-left: 0;
+      margin-right: 0;
+    }
+  {%- endif -%}
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .brd-ch__heading {
+      font-size: calc(var(--brd-ch-heading-size) * 0.72);
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Catálogo · Cabecera",
+  "tag": "section",
+  "class": "brd-ch-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Etiqueta superior",
+      "info": "Opcional."
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Título",
+      "info": "Déjalo vacío para usar el nombre de la colección.",
+      "default": "Complete Collection"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Descripción",
+      "info": "Déjalo vacío para usar la descripción de la colección.",
+      "default": "<p>Explora nuestra gama completa de bordado digital minimalista. Texturas de precisión sobre linos premium y algodones pesados, diseñadas para quien aprecia el cruce entre tecnología y oficio.</p>"
+    },
+    {
+      "type": "select",
+      "id": "align",
+      "label": "Alineación",
+      "options": [
+        { "value": "center", "label": "Centrado" },
+        { "value": "left", "label": "Izquierda" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Tamaños"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 20,
+      "max": 64,
+      "step": 2,
+      "unit": "px",
+      "label": "Tamaño del título",
+      "default": 34
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "min": 11,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamaño de la descripción",
+      "default": 13
+    },
+    {
+      "type": "range",
+      "id": "text_max_width",
+      "min": 400,
+      "max": 900,
+      "step": 20,
+      "unit": "px",
+      "label": "Ancho de la descripción",
+      "default": 620
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 800,
+      "max": 1800,
+      "step": 20,
+      "unit": "px",
+      "label": "Ancho del contenido",
+      "default": 1440
+    },
+    {
+      "type": "header",
+      "content": "Colores"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Fondo",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Título",
+      "default": "#1B1B19"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Descripción",
+      "default": "#6C63E8"
+    },
+    {
+      "type": "header",
+      "content": "Espaciado"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Espacio superior",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Espacio inferior",
+      "default": 32
+    }
+  ],
+  "presets": [
+    {
+      "name": "Catálogo · Cabecera"
+    }
+  ]
+}
+{% endschema %}
