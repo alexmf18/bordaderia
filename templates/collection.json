@@ -9,26 +9,58 @@
  */
 {
   "sections": {
-    "catalogo_cabecera": {
+    "main-collection-banner": {
+      "type": "main-collection-banner",
+      "disabled": true,
+      "settings": {
+        "show_collection_description": true,
+        "show_collection_image": true,
+        "color_scheme": "scheme-1"
+      }
+    },
+    "main-collection-product-grid": {
+      "type": "main-collection-product-grid",
+      "disabled": true,
+      "settings": {
+        "products_per_page": 20,
+        "columns_desktop": 4,
+        "columns_mobile": "2",
+        "color_scheme": "scheme-1",
+        "image_ratio": "adapt",
+        "image_shape": "default",
+        "show_secondary_image": true,
+        "show_vendor": false,
+        "show_rating": false,
+        "quick_add": "none",
+        "enable_filtering": true,
+        "filter_type": "horizontal",
+        "enable_sorting": true,
+        "padding_top": 0,
+        "padding_bottom": 68
+      }
+    },
+    "bordaderia_catalogo_cabecera_TaQrU7": {
       "type": "bordaderia-catalogo-cabecera",
+      "name": "Catálogo · Cabecera",
       "settings": {
         "label": "",
-        "heading": "",
-        "text": "",
+        "heading": "Colección Completa",
+        "text": "<p>Descubre nuestra colección de bordados únicos y personalizados. Cada pieza cuenta una historia hecha con dedicación y detalle. Explora nuestros artículos y encuentra el diseño perfecto que refleje tu estilo.</p>",
         "align": "center",
         "heading_size": 34,
         "text_size": 13,
         "text_max_width": 620,
         "max_width": 1440,
-        "bg_color": "#FFFFFF",
+        "bg_color": "#FBF9F9",
         "heading_color": "#1B1B19",
         "text_color": "#6C63E8",
         "padding_top": 56,
         "padding_bottom": 32
       }
     },
-    "catalogo_productos": {
+    "bordaderia_catalogo_grid_PDHxwd": {
       "type": "bordaderia-catalogo-grid",
+      "name": "Catálogo · Productos",
       "settings": {
         "show_toolbar": true,
         "filter_label": "Filtrar por:",
@@ -49,7 +81,7 @@
         "new_tag": "nuevo",
         "new_days": 30,
         "out_label": "Agotado",
-        "bg_color": "#FFFFFF",
+        "bg_color": "#FBF9F9",
         "card_bg": "#FFFFFF",
         "media_bg": "#F2F2F2",
         "border_color": "#E3E3E1",
@@ -66,7 +98,9 @@
     }
   },
   "order": [
-    "catalogo_cabecera",
-    "catalogo_productos"
+    "main-collection-banner",
+    "main-collection-product-grid",
+    "bordaderia_catalogo_cabecera_TaQrU7",
+    "bordaderia_catalogo_grid_PDHxwd"
   ]
 }
