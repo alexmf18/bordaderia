@@ -1,0 +1,1059 @@
+{%- comment -%}
+  ============================================================
+  BORDADERÍA · Contacto
+  Izquierda: título, texto breve y tarjetas de contacto.
+  Derecha: formulario que llega al correo de la tienda.
+  ============================================================
+{%- endcomment -%}
+
+{%- liquid
+  assign col_texto = section.settings.text_width
+  assign col_form = 100 | minus: col_texto
+  assign id_form = 'brd-ct-' | append: section.id
+-%}
+
+{%- style -%}
+  #shopify-section-{{ section.id }} {
+    --brd-ct-bg: {{ section.settings.bg_color }};
+    --brd-ct-heading: {{ section.settings.heading_color }};
+    --brd-ct-text: {{ section.settings.text_color }};
+    --brd-ct-label: {{ section.settings.label_color }};
+    --brd-ct-border: {{ section.settings.border_color }};
+    --brd-ct-box-bg: {{ section.settings.box_bg }};
+    --brd-ct-form-bg: {{ section.settings.form_bg }};
+    --brd-ct-field-bg: {{ section.settings.field_bg }};
+    --brd-ct-btn: {{ section.settings.button_bg }};
+    --brd-ct-btn-text: {{ section.settings.button_text_color }};
+    --brd-ct-icon: {{ section.settings.icon_color }};
+    --brd-ct-gap: {{ section.settings.gap }}px;
+    --brd-ct-max: {{ section.settings.max_width }}px;
+    --brd-ct-col-txt: {{ col_texto }}fr;
+    --brd-ct-col-form: {{ col_form }}fr;
+    --brd-ct-heading-size: {{ section.settings.heading_size }}px;
+    --brd-ct-text-size: {{ section.settings.text_size }}px;
+    --brd-ct-radius: {{ section.settings.box_radius }}px;
+    --brd-ct-border-w: {{ section.settings.border_width }}px;
+    --brd-ct-box-pad: {{ section.settings.box_padding }}px;
+    --brd-ct-form-pad: {{ section.settings.form_padding }}px;
+  }
+
+  .brd-ct {
+    box-sizing: border-box;
+    background: var(--brd-ct-bg);
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .brd-ct {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<section class="brd-ct">
+  <div class="brd-ct__inner page-width">
+    <div class="brd-ct__layout brd-ct__layout--{{ section.settings.form_position }}">
+
+      {%- comment -%} ---------- columna de texto ---------- {%- endcomment -%}
+      <div class="brd-ct__col-texto">
+        {%- if section.settings.label != blank -%}
+          <p class="brd-ct__label">{{ section.settings.label | escape }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.heading != blank -%}
+          <h1 class="brd-ct__heading">{{ section.settings.heading | escape }}</h1>
+        {%- endif -%}
+
+        {%- if section.settings.text != blank -%}
+          <div class="brd-ct__caja">{{ section.settings.text }}</div>
+        {%- endif -%}
+
+        {%- if section.blocks.size > 0 -%}
+          <ul class="brd-ct__contactos" role="list">
+            {%- for block in section.blocks -%}
+              {%- liquid
+                case block.settings.icon
+                  when 'telefono'
+                    assign ruta_icono = 'M6.6 2.5 8.9 7 7.3 8.6a11.5 11.5 0 0 0 5.1 5.1L14 12.1l4.5 2.3v3.1c0 1-.8 1.8-1.8 1.6C8.7 18.2 2.8 12.3 2 4.3c-.1-1 .7-1.8 1.6-1.8h3Z'
+                  when 'email'
+                    assign ruta_icono = 'M3 5.5h15v10H3zM3 6l7.5 5.5L18 6'
+                  when 'instagram'
+                    assign ruta_icono = 'M4 4h13v13H4zM10.5 7.8a2.7 2.7 0 1 0 0 5.4 2.7 2.7 0 0 0 0-5.4M14 6.6h.01'
+                  when 'whatsapp'
+                    assign ruta_icono = 'M3.5 17.5 4.7 14a6.7 6.7 0 1 1 2.6 2.5l-3.8 1M8 8.3c.4 1.6 1.8 3 3.4 3.4'
+                  when 'ubicacion'
+                    assign ruta_icono = 'M10.5 18s5.5-4.6 5.5-9a5.5 5.5 0 1 0-11 0c0 4.4 5.5 9 5.5 9ZM10.5 7.2a2 2 0 1 0 0 4 2 2 0 0 0 0-4'
+                  when 'horario'
+                    assign ruta_icono = 'M10.5 3a7.5 7.5 0 1 0 0 15 7.5 7.5 0 0 0 0-15M10.5 6.5v4.3l3 1.7'
+                  else
+                    assign ruta_icono = 'M10.5 3a7.5 7.5 0 1 0 0 15 7.5 7.5 0 0 0 0-15M10.5 7v4M10.5 14h.01'
+                endcase
+              -%}
+              <li class="brd-ct__contacto" {{ block.shopify_attributes }}>
+                {%- if block.settings.link != blank -%}
+                  <a class="brd-ct__contacto-caja" href="{{ block.settings.link }}"
+                    {% if block.settings.new_tab %}target="_blank" rel="noopener"{% endif %}>
+                {%- else -%}
+                  <div class="brd-ct__contacto-caja">
+                {%- endif -%}
+
+                {%- if section.settings.show_icons -%}
+                  <svg class="brd-ct__icono" viewBox="0 0 21 21" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <path d="{{ ruta_icono }}"/>
+                  </svg>
+                {%- endif -%}
+
+                <span class="brd-ct__contacto-texto">
+                  {%- if block.settings.label != blank -%}
+                    <span class="brd-ct__contacto-label">{{ block.settings.label | escape }}</span>
+                  {%- endif -%}
+                  {%- if block.settings.value != blank -%}
+                    <span class="brd-ct__contacto-valor">{{ block.settings.value | escape }}</span>
+                  {%- endif -%}
+                </span>
+
+                {%- if block.settings.link != blank -%}
+                  </a>
+                {%- else -%}
+                  </div>
+                {%- endif -%}
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} ---------- formulario ---------- {%- endcomment -%}
+      <div class="brd-ct__col-form">
+        <div class="brd-ct__form-caja">
+          {%- if section.settings.form_heading != blank -%}
+            <h2 class="brd-ct__form-heading">{{ section.settings.form_heading | escape }}</h2>
+          {%- endif -%}
+
+          {%- form 'contact', id: id_form, class: 'brd-ct__form' -%}
+            {%- if form.posted_successfully? -%}
+              <p class="brd-ct__ok" role="status">{{ section.settings.success_text | escape }}</p>
+            {%- elsif form.errors -%}
+              <div class="brd-ct__error" role="alert">
+                <p>{{ section.settings.error_text | escape }}</p>
+                <ul role="list">
+                  {%- for campo in form.errors -%}
+                    <li>{{ form.errors.messages[campo] }}</li>
+                  {%- endfor -%}
+                </ul>
+              </div>
+            {%- endif -%}
+
+            <div class="brd-ct__campos">
+              <p class="brd-ct__campo">
+                <label for="{{ id_form }}-nombre">{{ section.settings.name_label | escape }}</label>
+                <input
+                  type="text"
+                  id="{{ id_form }}-nombre"
+                  name="contact[{{ 'templates.contact.form.name' | t }}]"
+                  autocomplete="name"
+                  value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.name }}{% endif %}"
+                  {% if section.settings.name_required %}required{% endif %}
+                >
+              </p>
+
+              <p class="brd-ct__campo">
+                <label for="{{ id_form }}-email">{{ section.settings.email_label | escape }}</label>
+                <input
+                  type="email"
+                  id="{{ id_form }}-email"
+                  name="contact[email]"
+                  autocomplete="email"
+                  spellcheck="false"
+                  autocapitalize="off"
+                  value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}"
+                  required
+                >
+              </p>
+
+              {%- if section.settings.show_phone -%}
+                <p class="brd-ct__campo">
+                  <label for="{{ id_form }}-tel">{{ section.settings.phone_label | escape }}</label>
+                  <input
+                    type="tel"
+                    id="{{ id_form }}-tel"
+                    name="contact[{{ 'templates.contact.form.phone' | t }}]"
+                    autocomplete="tel"
+                    value="{% if form.phone %}{{ form.phone }}{% elsif customer %}{{ customer.phone }}{% endif %}"
+                  >
+                </p>
+              {%- endif -%}
+
+              {%- if section.settings.show_subject -%}
+                <p class="brd-ct__campo">
+                  <label for="{{ id_form }}-asunto">{{ section.settings.subject_label | escape }}</label>
+                  {%- assign asuntos = section.settings.subject_options | split: ',' -%}
+                  <select id="{{ id_form }}-asunto" name="contact[Asunto]">
+                    {%- for opcion in asuntos -%}
+                      <option value="{{ opcion | strip | escape }}">{{ opcion | strip | escape }}</option>
+                    {%- endfor -%}
+                  </select>
+                </p>
+              {%- endif -%}
+
+              <p class="brd-ct__campo brd-ct__campo--ancho">
+                <label for="{{ id_form }}-mensaje">{{ section.settings.message_label | escape }}</label>
+                <textarea
+                  id="{{ id_form }}-mensaje"
+                  name="contact[{{ 'templates.contact.form.comment' | t }}]"
+                  rows="{{ section.settings.message_rows }}"
+                  required
+                >{{ form.body }}</textarea>
+              </p>
+
+              {%- if section.settings.show_consent -%}
+                <p class="brd-ct__consent brd-ct__campo--ancho">
+                  <input type="checkbox" id="{{ id_form }}-consent" name="contact[Consentimiento]" value="Sí" required>
+                  <label for="{{ id_form }}-consent">{{ section.settings.consent_text }}</label>
+                </p>
+              {%- endif -%}
+            </div>
+
+            <button type="submit" class="brd-ct__submit">
+              <span>{{ section.settings.button_label | escape }}</span>
+              {%- if section.settings.button_arrow -%}
+                <span aria-hidden="true">&rarr;</span>
+              {%- endif -%}
+            </button>
+
+            {%- if section.settings.form_note != blank -%}
+              <p class="brd-ct__nota">{{ section.settings.form_note | escape }}</p>
+            {%- endif -%}
+          {%- endform -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  #shopify-section-{{ section.id }} .brd-ct,
+  #shopify-section-{{ section.id }} .brd-ct *,
+  #shopify-section-{{ section.id }} .brd-ct *::before,
+  #shopify-section-{{ section.id }} .brd-ct *::after {
+    box-sizing: border-box;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__inner {
+    max-width: var(--brd-ct-max);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__layout {
+    display: grid;
+    grid-template-columns: var(--brd-ct-col-txt) var(--brd-ct-col-form);
+    gap: var(--brd-ct-gap);
+    align-items: {{ section.settings.vertical_align }};
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__layout--left {
+    grid-template-columns: var(--brd-ct-col-form) var(--brd-ct-col-txt);
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__layout--left .brd-ct__col-form {
+    order: -1;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__col-texto,
+  #shopify-section-{{ section.id }} .brd-ct__col-form {
+    min-width: 0;
+  }
+
+  /* ---------- columna de texto ---------- */
+
+  #shopify-section-{{ section.id }} .brd-ct__label {
+    margin: 0 0 8px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brd-ct-label);
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__heading {
+    margin: 0;
+    font-size: var(--brd-ct-heading-size);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--brd-ct-heading);
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__caja {
+    margin-top: 20px;
+    padding: var(--brd-ct-box-pad);
+    background: var(--brd-ct-box-bg);
+    border: var(--brd-ct-border-w) solid var(--brd-ct-border);
+    border-radius: var(--brd-ct-radius);
+    font-size: var(--brd-ct-text-size);
+    line-height: 1.75;
+    color: var(--brd-ct-text);
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__caja > *:first-child { margin-top: 0; }
+  #shopify-section-{{ section.id }} .brd-ct__caja > *:last-child { margin-bottom: 0; }
+
+  #shopify-section-{{ section.id }} .brd-ct__contactos {
+    display: grid;
+    grid-template-columns: repeat({{ section.settings.contact_columns }}, minmax(0, 1fr));
+    gap: 12px;
+    margin: 24px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__contacto {
+    min-width: 0;
+    display: flex;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__contacto-caja {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 12px 14px;
+    background: var(--brd-ct-box-bg);
+    border: var(--brd-ct-border-w) solid var(--brd-ct-border);
+    border-radius: var(--brd-ct-radius);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+
+  #shopify-section-{{ section.id }} a.brd-ct__contacto-caja:hover,
+  #shopify-section-{{ section.id }} a.brd-ct__contacto-caja:focus-visible {
+    border-color: var(--brd-ct-btn);
+    transform: translateY(-2px);
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__icono {
+    width: {{ section.settings.icon_size }}px;
+    height: {{ section.settings.icon_size }}px;
+    flex: 0 0 auto;
+    color: var(--brd-ct-icon);
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__contacto-texto {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__contacto-label {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--brd-ct-label);
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__contacto-valor {
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.35;
+    color: var(--brd-ct-heading);
+    overflow-wrap: anywhere;
+  }
+
+  /* ---------- formulario ---------- */
+
+  #shopify-section-{{ section.id }} .brd-ct__form-caja {
+    padding: var(--brd-ct-form-pad);
+    background: var(--brd-ct-form-bg);
+    border: var(--brd-ct-border-w) solid var(--brd-ct-border);
+    border-radius: var(--brd-ct-radius);
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__form-heading {
+    margin: 0 0 18px;
+    font-size: calc(var(--brd-ct-heading-size) * 0.55);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--brd-ct-heading);
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__campos {
+    display: grid;
+    grid-template-columns: repeat({{ section.settings.form_columns }}, minmax(0, 1fr));
+    gap: 15px;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__campo,
+  #shopify-section-{{ section.id }} .brd-ct__consent {
+    margin: 0;
+    min-width: 0;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__campo--ancho,
+  #shopify-section-{{ section.id }} .brd-ct__consent {
+    grid-column: 1 / -1;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__campo label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--brd-ct-label);
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__campo input,
+  #shopify-section-{{ section.id }} .brd-ct__campo select,
+  #shopify-section-{{ section.id }} .brd-ct__campo textarea {
+    width: 100%;
+    padding: 11px 12px;
+    background: var(--brd-ct-field-bg);
+    border: 1px solid var(--brd-ct-border);
+    border-radius: {{ section.settings.field_radius }}px;
+    font-family: inherit;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--brd-ct-heading);
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__campo textarea {
+    resize: vertical;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__campo input:focus,
+  #shopify-section-{{ section.id }} .brd-ct__campo select:focus,
+  #shopify-section-{{ section.id }} .brd-ct__campo textarea:focus {
+    outline: 2px solid var(--brd-ct-btn);
+    outline-offset: 1px;
+    border-color: var(--brd-ct-btn);
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__consent {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--brd-ct-text);
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__consent label {
+    margin: 0;
+    font-size: 11px;
+    letter-spacing: 0;
+    text-transform: none;
+    color: inherit;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__consent input {
+    margin-top: 2px;
+    flex: 0 0 auto;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: {% if section.settings.button_full %}100%{% else %}auto{% endif %};
+    margin-top: 18px;
+    padding: {{ section.settings.button_padding_y }}px 26px;
+    border: 1px solid var(--brd-ct-btn);
+    border-radius: {{ section.settings.button_radius }}px;
+    background: var(--brd-ct-btn);
+    color: var(--brd-ct-btn-text);
+    font-family: inherit;
+    font-size: {{ section.settings.button_font_size }}px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__submit:hover {
+    opacity: 0.88;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__nota {
+    margin: 12px 0 0;
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--brd-ct-label);
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__ok,
+  #shopify-section-{{ section.id }} .brd-ct__error {
+    margin: 0 0 16px;
+    padding: 12px 14px;
+    border-radius: {{ section.settings.field_radius }}px;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__ok {
+    border: 1px solid #1E8E3E;
+    color: #1E8E3E;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__error {
+    border: 1px solid #D93025;
+    color: #D93025;
+  }
+
+  #shopify-section-{{ section.id }} .brd-ct__error ul {
+    margin: 6px 0 0;
+    padding-left: 18px;
+  }
+
+  /* ---------- responsive ---------- */
+
+  @media screen and (max-width: 989px) {
+    #shopify-section-{{ section.id }} .brd-ct__contactos {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    #shopify-section-{{ section.id }} .brd-ct__layout,
+    #shopify-section-{{ section.id }} .brd-ct__layout--left {
+      grid-template-columns: 1fr;
+      gap: 26px;
+    }
+
+    #shopify-section-{{ section.id }} .brd-ct__layout--left .brd-ct__col-form {
+      order: 0;
+    }
+
+    #shopify-section-{{ section.id }} .brd-ct__contactos {
+      grid-template-columns: 1fr;
+    }
+
+    #shopify-section-{{ section.id }} .brd-ct__campos {
+      grid-template-columns: 1fr;
+    }
+
+    #shopify-section-{{ section.id }} .brd-ct__submit {
+      width: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #shopify-section-{{ section.id }} .brd-ct__contacto-caja,
+    #shopify-section-{{ section.id }} .brd-ct__submit {
+      transition: none;
+    }
+
+    #shopify-section-{{ section.id }} a.brd-ct__contacto-caja:hover {
+      transform: none;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Contacto",
+  "tag": "section",
+  "class": "brd-ct-section",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Etiqueta superior",
+      "info": "Opcional."
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Título",
+      "default": "Contáctanos"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Texto breve",
+      "default": "<p>¿Tienes una idea para un bordado personalizado o una duda sobre tu pedido? Escríbenos y te respondemos en menos de 24 horas laborables.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Tarjetas de contacto"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_icons",
+      "label": "Mostrar iconos",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "min": 12,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Tamaño de los iconos",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "contact_columns",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "label": "Columnas de las tarjetas",
+      "default": 3
+    },
+    {
+      "type": "header",
+      "content": "Formulario"
+    },
+    {
+      "type": "text",
+      "id": "form_heading",
+      "label": "Título del formulario",
+      "info": "Déjalo vacío para ocultarlo."
+    },
+    {
+      "type": "select",
+      "id": "form_columns",
+      "label": "Columnas de los campos",
+      "options": [
+        { "value": "1", "label": "1 columna" },
+        { "value": "2", "label": "2 columnas" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "text",
+      "id": "name_label",
+      "label": "Etiqueta del nombre",
+      "default": "Nombre"
+    },
+    {
+      "type": "checkbox",
+      "id": "name_required",
+      "label": "Nombre obligatorio",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "email_label",
+      "label": "Etiqueta del correo",
+      "default": "Correo electrónico"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_phone",
+      "label": "Pedir teléfono",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "phone_label",
+      "label": "Etiqueta del teléfono",
+      "default": "Teléfono"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_subject",
+      "label": "Pedir asunto",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "subject_label",
+      "label": "Etiqueta del asunto",
+      "default": "Asunto"
+    },
+    {
+      "type": "textarea",
+      "id": "subject_options",
+      "label": "Opciones del asunto",
+      "info": "Separadas por comas.",
+      "default": "Pedido personalizado, Consulta sobre un pedido, Colaboraciones, Otro"
+    },
+    {
+      "type": "text",
+      "id": "message_label",
+      "label": "Etiqueta del mensaje",
+      "default": "Mensaje"
+    },
+    {
+      "type": "range",
+      "id": "message_rows",
+      "min": 3,
+      "max": 12,
+      "step": 1,
+      "label": "Alto del mensaje",
+      "info": "En número de líneas.",
+      "default": 6
+    },
+    {
+      "type": "checkbox",
+      "id": "show_consent",
+      "label": "Pedir aceptación de privacidad",
+      "default": false
+    },
+    {
+      "type": "inline_richtext",
+      "id": "consent_text",
+      "label": "Texto de la aceptación",
+      "default": "He leído y acepto la política de privacidad."
+    },
+    {
+      "type": "text",
+      "id": "form_note",
+      "label": "Nota bajo el botón",
+      "info": "Opcional."
+    },
+    {
+      "type": "text",
+      "id": "success_text",
+      "label": "Mensaje de envío correcto",
+      "default": "Mensaje enviado. Te respondemos muy pronto."
+    },
+    {
+      "type": "text",
+      "id": "error_text",
+      "label": "Mensaje de error",
+      "default": "Revisa estos campos y vuelve a intentarlo:"
+    },
+    {
+      "type": "header",
+      "content": "Botón"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Texto del botón",
+      "default": "Enviar mensaje"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_arrow",
+      "label": "Mostrar la flecha",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "button_full",
+      "label": "Botón a todo el ancho",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "button_padding_y",
+      "min": 8,
+      "max": 26,
+      "step": 1,
+      "unit": "px",
+      "label": "Alto del botón",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "min": 9,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamaño del texto del botón",
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "button_radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "label": "Redondeo del botón",
+      "default": 2
+    },
+    {
+      "type": "header",
+      "content": "Diseño"
+    },
+    {
+      "type": "select",
+      "id": "form_position",
+      "label": "Posición del formulario",
+      "options": [
+        { "value": "right", "label": "Derecha" },
+        { "value": "left", "label": "Izquierda" }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "range",
+      "id": "text_width",
+      "min": 30,
+      "max": 70,
+      "step": 5,
+      "unit": "%",
+      "label": "Ancho de la columna de texto",
+      "default": 50
+    },
+    {
+      "type": "select",
+      "id": "vertical_align",
+      "label": "Alineación vertical",
+      "options": [
+        { "value": "start", "label": "Arriba" },
+        { "value": "center", "label": "Centrado" },
+        { "value": "stretch", "label": "Misma altura" }
+      ],
+      "default": "start"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "min": 20,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Separación entre columnas",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 800,
+      "max": 1600,
+      "step": 20,
+      "unit": "px",
+      "label": "Ancho del contenido",
+      "default": 1240
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Tamaño del título",
+      "default": 34
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "min": 11,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamaño del texto",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "box_padding",
+      "min": 12,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Relleno de la caja de texto",
+      "default": 28
+    },
+    {
+      "type": "range",
+      "id": "form_padding",
+      "min": 12,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Relleno de la caja del formulario",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "box_radius",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Redondeo de las cajas",
+      "default": 10
+    },
+    {
+      "type": "range",
+      "id": "field_radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Redondeo de los campos",
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "min": 0,
+      "max": 3,
+      "step": 1,
+      "unit": "px",
+      "label": "Grosor de los bordes",
+      "default": 1
+    },
+    {
+      "type": "header",
+      "content": "Colores"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Fondo de la sección",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "box_bg",
+      "label": "Fondo de las cajas de texto",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "form_bg",
+      "label": "Fondo del formulario",
+      "default": "#FBFAF8"
+    },
+    {
+      "type": "color",
+      "id": "field_bg",
+      "label": "Fondo de los campos",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Bordes",
+      "default": "#DEDCD8"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Títulos y valores",
+      "default": "#1B1B19"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Texto",
+      "default": "#5A5A57"
+    },
+    {
+      "type": "color",
+      "id": "label_color",
+      "label": "Etiquetas pequeñas",
+      "default": "#8A8A86"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Iconos",
+      "default": "#1A4EE0"
+    },
+    {
+      "type": "color",
+      "id": "button_bg",
+      "label": "Fondo del botón",
+      "default": "#1A4EE0"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Texto del botón",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Espaciado"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Espacio superior",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "label": "Espacio inferior",
+      "default": 64
+    }
+  ],
+  "blocks": [
+    {
+      "type": "contacto",
+      "name": "Tarjeta de contacto",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icono",
+          "options": [
+            { "value": "telefono", "label": "Teléfono" },
+            { "value": "email", "label": "Correo" },
+            { "value": "instagram", "label": "Instagram" },
+            { "value": "whatsapp", "label": "WhatsApp" },
+            { "value": "ubicacion", "label": "Ubicación" },
+            { "value": "horario", "label": "Horario" },
+            { "value": "otro", "label": "Genérico" }
+          ],
+          "default": "telefono"
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Etiqueta",
+          "default": "Teléfono"
+        },
+        {
+          "type": "text",
+          "id": "value",
+          "label": "Valor",
+          "default": "+34 600 000 000"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Enlace",
+          "info": "Para teléfono usa tel:+34600000000 y para correo mailto:hola@tutienda.com"
+        },
+        {
+          "type": "checkbox",
+          "id": "new_tab",
+          "label": "Abrir en una pestaña nueva",
+          "default": false
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contacto",
+      "blocks": [
+        { "type": "contacto", "settings": { "icon": "telefono", "label": "Teléfono", "value": "+34 600 000 000" } },
+        { "type": "contacto", "settings": { "icon": "email", "label": "Correo", "value": "hola@bordaderia.com" } },
+        { "type": "contacto", "settings": { "icon": "instagram", "label": "Instagram", "value": "@stitchandglitch" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
