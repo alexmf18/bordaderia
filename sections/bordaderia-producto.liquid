@@ -23,6 +23,42 @@
   assign ratio_pct = ratio_h | times: 100.0 | divided_by: ratio_w
 
   assign id_form = 'brd-pd-form-' | append: section.id
+
+  # Ancho del botón de compra
+  case section.settings.button_width
+    when 'full'
+      assign ancho_boton = '100%'
+    when 'auto'
+      assign ancho_boton = 'auto'
+    else
+      assign ancho_boton = section.settings.button_custom_width | append: '%'
+  endcase
+
+  # Alineación (solo se nota si el botón no ocupa todo el ancho)
+  case section.settings.button_align
+    when 'center'
+      assign alineacion_boton = 'center'
+    when 'right'
+      assign alineacion_boton = 'flex-end'
+    else
+      assign alineacion_boton = 'flex-start'
+  endcase
+
+  # Posición vertical del bloque de compra dentro de la columna
+  case section.settings.buy_position
+    when 'before_desc'
+      assign orden_form = 1
+      assign orden_desc = 2
+      assign orden_rows = 3
+    when 'end'
+      assign orden_desc = 1
+      assign orden_rows = 2
+      assign orden_form = 3
+    else
+      assign orden_desc = 1
+      assign orden_form = 2
+      assign orden_rows = 3
+  endcase
 -%}
 
 {%- style -%}
@@ -48,6 +84,13 @@
     --brd-pd-badge-text: {{ section.settings.badge_text }};
     --brd-pd-stock-ok: {{ section.settings.stock_ok_color }};
     --brd-pd-stock-low: {{ section.settings.stock_low_color }};
+    --brd-pd-btn-w: {{ ancho_boton }};
+    --brd-pd-btn-align: {{ alineacion_boton }};
+    --brd-pd-btn-py: {{ section.settings.button_padding_y }}px;
+    --brd-pd-btn-px: {{ section.settings.button_padding_x }}px;
+    --brd-pd-btn-size: {{ section.settings.button_font_size }}px;
+    --brd-pd-btn-track: {{ section.settings.button_tracking | divided_by: 100.0 }}em;
+    --brd-pd-btn-gap: {{ section.settings.button_gap }}px;
   }
 
   .brd-pd {
@@ -270,7 +313,8 @@
             </div>
           {%- endif -%}
 
-          <button
+          <div class="brd-pd__submit-wrap">
+            <button
             type="submit"
             name="add"
             class="brd-pd__submit"
@@ -288,7 +332,8 @@
               <span class="brd-pd__arrow" aria-hidden="true">&rarr;</span>
             {%- endif -%}
             {%- render 'loading-spinner' -%}
-          </button>
+            </button>
+          </div>
 
           {%- if section.settings.show_payment_button -%}
             <div class="brd-pd__dynamic">{{ form | payment_button }}</div>
@@ -710,25 +755,69 @@
     display: none;
   }
 
+  /* ---------- botón de compra: tamaño y posición ---------- */
+
+  #shopify-section-{{ section.id }} .brd-pd__info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  #shopify-section-{{ section.id }} .brd-pd__desc {
+    order: {{ orden_desc }};
+  }
+
+  #shopify-section-{{ section.id }} .brd-pd__product-form {
+    order: {{ orden_form }};
+  }
+
+  #shopify-section-{{ section.id }} .brd-pd__rows {
+    order: {{ orden_rows }};
+  }
+
+  #shopify-section-{{ section.id }} .brd-pd__submit-wrap {
+    display: flex;
+    justify-content: var(--brd-pd-btn-align);
+    margin-top: var(--brd-pd-btn-gap);
+  }
+
   #shopify-section-{{ section.id }} .brd-pd__submit {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    width: 100%;
-    margin-top: 24px;
-    padding: 15px 20px;
+    width: var(--brd-pd-btn-w);
+    padding: var(--brd-pd-btn-py) var(--brd-pd-btn-px);
     border: 1px solid var(--brd-pd-btn);
     border-radius: {{ section.settings.button_radius }}px;
     background: var(--brd-pd-btn);
     color: var(--brd-pd-btn-text);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    font-size: var(--brd-pd-btn-size);
+    font-weight: {{ section.settings.button_weight }};
+    letter-spacing: var(--brd-pd-btn-track);
+    {% if section.settings.button_uppercase %}text-transform: uppercase;{% endif %}
     cursor: pointer;
     transition: opacity 0.2s ease;
+  }
+
+  @media screen and (max-width: 749px) {
+    {%- if section.settings.button_full_mobile -%}
+      #shopify-section-{{ section.id }} .brd-pd__submit-wrap {
+        justify-content: stretch;
+      }
+
+      #shopify-section-{{ section.id }} .brd-pd__submit {
+        width: 100%;
+      }
+    {%- endif -%}
+
+    {%- if section.settings.button_sticky_mobile -%}
+      #shopify-section-{{ section.id }} .brd-pd__submit-wrap {
+        position: sticky;
+        bottom: 10px;
+        z-index: 5;
+      }
+    {%- endif -%}
   }
 
   #shopify-section-{{ section.id }} .brd-pd__submit:hover {
@@ -1281,6 +1370,140 @@
       "unit": "px",
       "label": "Redondeo del botón",
       "default": 2
+    },
+    {
+      "type": "header",
+      "content": "Tamaño del botón"
+    },
+    {
+      "type": "select",
+      "id": "button_width",
+      "label": "Ancho",
+      "options": [
+        { "value": "full", "label": "Todo el ancho de la columna" },
+        { "value": "auto", "label": "Ajustado al texto" },
+        { "value": "custom", "label": "Porcentaje a medida" }
+      ],
+      "default": "full"
+    },
+    {
+      "type": "range",
+      "id": "button_custom_width",
+      "min": 25,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Ancho a medida",
+      "info": "Solo se aplica con la opción \"Porcentaje a medida\".",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "button_padding_y",
+      "min": 6,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "label": "Alto (relleno vertical)",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "button_padding_x",
+      "min": 10,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Relleno horizontal",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "min": 9,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamaño del texto",
+      "default": 11
+    },
+    {
+      "type": "select",
+      "id": "button_weight",
+      "label": "Grosor del texto",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medio" },
+        { "value": "600", "label": "Seminegrita" },
+        { "value": "700", "label": "Negrita" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "range",
+      "id": "button_tracking",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "label": "Espaciado entre letras",
+      "info": "En centésimas de em.",
+      "default": 14
+    },
+    {
+      "type": "checkbox",
+      "id": "button_uppercase",
+      "label": "Texto en mayúsculas",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Posición del botón"
+    },
+    {
+      "type": "select",
+      "id": "button_align",
+      "label": "Alineación horizontal",
+      "info": "Solo se nota si el botón no ocupa todo el ancho.",
+      "options": [
+        { "value": "left", "label": "Izquierda" },
+        { "value": "center", "label": "Centrado" },
+        { "value": "right", "label": "Derecha" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "buy_position",
+      "label": "Posición del bloque de compra",
+      "info": "Mueve las opciones y el botón dentro de la columna de información.",
+      "options": [
+        { "value": "before_desc", "label": "Antes de la descripción" },
+        { "value": "after_desc", "label": "Después de la descripción" },
+        { "value": "end", "label": "Al final, tras los desplegables" }
+      ],
+      "default": "after_desc"
+    },
+    {
+      "type": "range",
+      "id": "button_gap",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Separación sobre el botón",
+      "default": 24
+    },
+    {
+      "type": "checkbox",
+      "id": "button_full_mobile",
+      "label": "En móvil, siempre a todo el ancho",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "button_sticky_mobile",
+      "label": "En móvil, mantenerlo visible al hacer scroll",
+      "default": false
     },
     {
       "type": "checkbox",
