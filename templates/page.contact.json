@@ -27,10 +27,108 @@
         "padding_top": 36,
         "padding_bottom": 36
       }
+    },
+    "bordaderia_contacto_fiaMUL": {
+      "type": "bordaderia-contacto",
+      "blocks": {
+        "contacto_pKkBze": {
+          "type": "contacto",
+          "settings": {
+            "icon": "telefono",
+            "label": "Teléfono",
+            "value": "+34 600 000 000",
+            "link": "",
+            "new_tab": false
+          }
+        },
+        "contacto_yjdCAt": {
+          "type": "contacto",
+          "settings": {
+            "icon": "email",
+            "label": "Correo",
+            "value": "hola@bordaderia.com",
+            "link": "",
+            "new_tab": false
+          }
+        },
+        "contacto_PMgCWY": {
+          "type": "contacto",
+          "settings": {
+            "icon": "instagram",
+            "label": "Instagram",
+            "value": "@stitchandglitch",
+            "link": "",
+            "new_tab": false
+          }
+        }
+      },
+      "block_order": [
+        "contacto_pKkBze",
+        "contacto_yjdCAt",
+        "contacto_PMgCWY"
+      ],
+      "name": "Contacto",
+      "settings": {
+        "label": "",
+        "heading": "Contáctanos",
+        "text": "<p>¿Tienes una idea para un bordado personalizado o una duda sobre tu pedido? Nos encantaría escucharte. Escríbenos a través del formulario de contacto y nuestro equipo te responderá en menos de 24 horas laborables. Estamos aquí para ayudarte con cualquier pregunta, sugerencia o incidencia que tengas en mente.</p>",
+        "show_icons": true,
+        "icon_size": 18,
+        "contact_columns": 3,
+        "form_heading": "",
+        "form_columns": "2",
+        "name_label": "Nombre",
+        "name_required": true,
+        "email_label": "Correo electrónico",
+        "show_phone": false,
+        "phone_label": "Teléfono",
+        "show_subject": false,
+        "subject_label": "Asunto",
+        "subject_options": "Pedido personalizado, Consulta sobre un pedido, Colaboraciones, Otro",
+        "message_label": "Mensaje",
+        "message_rows": 6,
+        "show_consent": false,
+        "consent_text": "He leído y acepto la política de privacidad.",
+        "form_note": "",
+        "success_text": "Mensaje enviado. Te respondemos muy pronto.",
+        "error_text": "Revisa estos campos y vuelve a intentarlo:",
+        "button_label": "Enviar mensaje",
+        "button_arrow": true,
+        "button_full": true,
+        "button_padding_y": 14,
+        "button_font_size": 11,
+        "button_radius": 2,
+        "form_position": "right",
+        "text_width": 50,
+        "vertical_align": "start",
+        "gap": 56,
+        "max_width": 1240,
+        "heading_size": 34,
+        "text_size": 14,
+        "box_padding": 28,
+        "form_padding": 32,
+        "box_radius": 10,
+        "field_radius": 2,
+        "border_width": 1,
+        "bg_color": "#FFFFFF",
+        "box_bg": "#FFFFFF",
+        "form_bg": "#FBFAF8",
+        "field_bg": "#FFFFFF",
+        "border_color": "#DEDCD8",
+        "heading_color": "#1B1B19",
+        "text_color": "#5A5A57",
+        "label_color": "#8A8A86",
+        "icon_color": "#1A4EE0",
+        "button_bg": "#1A4EE0",
+        "button_text_color": "#FFFFFF",
+        "padding_top": 64,
+        "padding_bottom": 64
+      }
     }
   },
   "order": [
     "main",
-    "form"
+    "form",
+    "bordaderia_contacto_fiaMUL"
   ]
 }
