@@ -71,8 +71,8 @@
         "link_color": "#6c63e8",
         "link_hover_color": "#1a4ee0",
         "legal_color": "#2e3a8c",
-        "padding_top": 0,
-        "padding_bottom": 0
+        "padding_top": 24,
+        "padding_bottom": 26
       }
     },
     "footer": {
