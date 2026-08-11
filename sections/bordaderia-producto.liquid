@@ -24,6 +24,10 @@
 
   assign id_form = 'brd-pd-form-' | append: section.id
 
+  # Tabla "nombre:color" para pintar las muestras cuando el valor de la
+  # opción no tiene un color asignado en el admin de Shopify.
+  assign mapa_colores = section.settings.color_map | split: ','
+
   # Ancho del botón de compra
   case section.settings.button_width
     when 'full'
@@ -263,6 +267,9 @@
                         endcapture
                         assign texto = texto | strip
 
+                        # Orden de preferencia para la muestra de color:
+                        # 1) imagen del swatch del admin  2) color del swatch del admin
+                        # 3) tabla de equivalencias de la sección  4) nombre en inglés
                         assign muestra = null
                         if value.swatch.image
                           assign url_muestra = value.swatch.image | image_url: width: 60
@@ -270,7 +277,21 @@
                         elsif value.swatch.color
                           assign muestra = 'rgb(' | append: value.swatch.color.rgb | append: ')'
                         else
-                          assign muestra = texto | downcase | replace: ' ', ''
+                          assign clave = texto | downcase | strip
+                          for par in mapa_colores
+                            assign trozos = par | split: ':'
+                            assign nombre_par = trozos[0] | downcase | strip
+                            if nombre_par == clave and trozos[1] != blank
+                              assign muestra = trozos[1] | strip
+                              break
+                            endif
+                          endfor
+                        endif
+
+                        # Sin color reconocible: se muestra como botón de texto
+                        assign pintar_muestra = false
+                        if es_color and muestra != blank
+                          assign pintar_muestra = true
                         endif
 
                         assign id_input = section.id | append: '-' | append: option.position | append: '-' | append: forloop.index0
@@ -279,9 +300,9 @@
                         {%- continue -%}
                       {%- endif -%}
                       <label
-                        class="brd-pd__value brd-pd__value--{{ section.settings.value_shape }} {% if es_color %}brd-pd__value--swatch{% endif %} {% unless value.available %}brd-pd__value--off{% endunless %}"
+                        class="brd-pd__value brd-pd__value--{{ section.settings.value_shape }} {% if pintar_muestra %}brd-pd__value--swatch{% endif %} {% unless value.available %}brd-pd__value--off{% endunless %}"
                         for="brd-pd-{{ id_input }}"
-                        {% if es_color %}title="{{ texto | escape }}"{% endif %}
+                        {% if pintar_muestra %}title="{{ texto | escape }}"{% endif %}
                       >
                         <input
                           type="radio"
@@ -292,8 +313,8 @@
                           data-option-index="{{ forloop.parentloop.index0 }}"
                           {% if value.selected %}checked{% endif %}
                         >
-                        {%- if es_color -%}
-                          <span class="brd-pd__swatch" style="background: {{ muestra }}; background-size: cover;"></span>
+                        {%- if pintar_muestra -%}
+                          <span class="brd-pd__swatch" style="background: {{ muestra }}; background-size: cover; background-position: center;"></span>
                           <span class="visually-hidden">{{ texto | escape }}</span>
                         {%- else -%}
                           <span class="brd-pd__value-text">{{ texto | escape }}</span>
@@ -1322,6 +1343,13 @@
       "unit": "px",
       "label": "Tamaño de las muestras de color",
       "default": 26
+    },
+    {
+      "type": "textarea",
+      "id": "color_map",
+      "label": "Equivalencias de color",
+      "info": "Formato nombre:color, separados por comas. Solo se usa cuando el valor de la opción no tiene un color asignado en el admin de Shopify. Si un nombre no está en la lista, esa opción se muestra como botón de texto.",
+      "default": "blanco:#FFFFFF, hueso:#EDE6DA, crudo:#F2EDE3, crema:#F5EFE0, beige:#E8DCC8, arena:#DFD3B8, negro:#1B1B19, antracita:#3A3A38, grafito:#4A4A48, gris:#9A9A97, gris claro:#D4D4D2, azul:#1A4EE0, azul marino:#1B2A63, marino:#1B2A63, celeste:#7FB2E5, denim:#3B5B92, turquesa:#3AB0A2, verde:#2E8B57, verde oliva:#6B7B3A, caqui:#A79B72, menta:#A8E0C8, rojo:#D93025, granate:#7B1E22, vino:#5E1F2E, teja:#B5543A, coral:#F08A7C, rosa:#E8A0BF, fucsia:#D6338A, morado:#6C63E8, lila:#B7A6E8, violeta:#7A4FBF, naranja:#E87A2E, amarillo:#E9C349, mostaza:#D4A017, marrón:#6B4A2F, camel:#C19A6B, cobre:#B87333, dorado:#C9A227, plata:#C0C0C0"
     },
     {
       "type": "select",
