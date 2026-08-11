@@ -137,7 +137,7 @@
         "button_bg": "#6C63E8",
         "button_text_color": "#ffffff",
         "padding_top": 64,
-        "padding_bottom": 64
+        "padding_bottom": 0
       }
     }
   },
