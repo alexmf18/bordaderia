@@ -35,6 +35,14 @@
     --brd-ct-border-w: {{ section.settings.border_width }}px;
     --brd-ct-box-pad: {{ section.settings.box_padding }}px;
     --brd-ct-form-pad: {{ section.settings.form_padding }}px;
+    --brd-ct-form-radius: {{ section.settings.form_radius }}px;
+    --brd-ct-form-heading: {{ section.settings.form_heading_color }};
+    --brd-ct-form-heading-size: {{ section.settings.form_heading_size }}px;
+    --brd-ct-form-label: {{ section.settings.form_label_color }};
+    --brd-ct-field-text: {{ section.settings.field_text_color }};
+    --brd-ct-field-radius: {{ section.settings.field_radius }}px;
+    --brd-ct-field-py: {{ section.settings.field_padding_y }}px;
+    --brd-ct-field-border-w: {{ section.settings.field_border_width }}px;
   }
 
   .brd-ct {
@@ -370,22 +378,23 @@
   #shopify-section-{{ section.id }} .brd-ct__form-caja {
     padding: var(--brd-ct-form-pad);
     background: var(--brd-ct-form-bg);
-    border: var(--brd-ct-border-w) solid var(--brd-ct-border);
-    border-radius: var(--brd-ct-radius);
+    border: {% if section.settings.form_border %}var(--brd-ct-border-w){% else %}0{% endif %} solid var(--brd-ct-border);
+    border-radius: var(--brd-ct-form-radius);
   }
 
   #shopify-section-{{ section.id }} .brd-ct__form-heading {
-    margin: 0 0 18px;
-    font-size: calc(var(--brd-ct-heading-size) * 0.55);
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    color: var(--brd-ct-heading);
+    margin: 0 0 26px;
+    font-size: var(--brd-ct-form-heading-size);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--brd-ct-form-heading);
   }
 
   #shopify-section-{{ section.id }} .brd-ct__campos {
     display: grid;
     grid-template-columns: repeat({{ section.settings.form_columns }}, minmax(0, 1fr));
-    gap: 15px;
+    gap: {{ section.settings.field_gap }}px;
   }
 
   #shopify-section-{{ section.id }} .brd-ct__campo,
@@ -401,30 +410,36 @@
 
   #shopify-section-{{ section.id }} .brd-ct__campo label {
     display: block;
-    margin-bottom: 6px;
-    font-size: 10px;
+    margin-bottom: 8px;
+    font-size: {{ section.settings.field_label_size }}px;
     font-weight: 500;
+    {%- if section.settings.field_label_style == 'uppercase' %}
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--brd-ct-label);
+    {%- else %}
+    letter-spacing: 0.01em;
+    {%- endif %}
+    color: var(--brd-ct-form-label);
   }
 
   #shopify-section-{{ section.id }} .brd-ct__campo input,
   #shopify-section-{{ section.id }} .brd-ct__campo select,
   #shopify-section-{{ section.id }} .brd-ct__campo textarea {
     width: 100%;
-    padding: 11px 12px;
+    padding: var(--brd-ct-field-py) 18px;
     background: var(--brd-ct-field-bg);
-    border: 1px solid var(--brd-ct-border);
-    border-radius: {{ section.settings.field_radius }}px;
+    border: var(--brd-ct-field-border-w) solid var(--brd-ct-border);
+    border-radius: var(--brd-ct-field-radius);
     font-family: inherit;
-    font-size: 13px;
+    font-size: {{ section.settings.field_font_size }}px;
     line-height: 1.5;
-    color: var(--brd-ct-heading);
+    color: var(--brd-ct-field-text);
   }
 
   #shopify-section-{{ section.id }} .brd-ct__campo textarea {
     resize: vertical;
+    /* el área de mensaje no se convierte en cápsula por muy alto que sea el radio */
+    border-radius: min(var(--brd-ct-field-radius), 22px);
   }
 
   #shopify-section-{{ section.id }} .brd-ct__campo input:focus,
@@ -463,17 +478,21 @@
     justify-content: center;
     gap: 10px;
     width: {% if section.settings.button_full %}100%{% else %}auto{% endif %};
-    margin-top: 18px;
-    padding: {{ section.settings.button_padding_y }}px 26px;
+    margin-top: 22px;
+    padding: {{ section.settings.button_padding_y }}px {{ section.settings.button_padding_x }}px;
     border: 1px solid var(--brd-ct-btn);
     border-radius: {{ section.settings.button_radius }}px;
     background: var(--brd-ct-btn);
     color: var(--brd-ct-btn-text);
     font-family: inherit;
     font-size: {{ section.settings.button_font_size }}px;
-    font-weight: 600;
+    font-weight: {{ section.settings.button_weight }};
+    {%- if section.settings.button_uppercase %}
     letter-spacing: 0.14em;
     text-transform: uppercase;
+    {%- else %}
+    letter-spacing: 0.02em;
+    {%- endif %}
     cursor: pointer;
     transition: opacity 0.2s ease;
   }
@@ -619,7 +638,78 @@
       "type": "text",
       "id": "form_heading",
       "label": "Título del formulario",
-      "info": "Déjalo vacío para ocultarlo."
+      "info": "Déjalo vacío para ocultarlo.",
+      "default": "Hablemos."
+    },
+    {
+      "type": "range",
+      "id": "form_heading_size",
+      "min": 16,
+      "max": 56,
+      "step": 2,
+      "unit": "px",
+      "label": "Tamaño del título del formulario",
+      "default": 32
+    },
+    {
+      "type": "select",
+      "id": "field_label_style",
+      "label": "Estilo de las etiquetas de los campos",
+      "options": [
+        { "value": "normal", "label": "Normal" },
+        { "value": "uppercase", "label": "Mayúsculas espaciadas" }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "range",
+      "id": "field_label_size",
+      "min": 9,
+      "max": 16,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamaño de las etiquetas",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "field_font_size",
+      "min": 11,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Tamaño del texto de los campos",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "field_padding_y",
+      "min": 8,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Alto de los campos",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "field_gap",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Separación entre campos",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "field_border_width",
+      "min": 0,
+      "max": 3,
+      "step": 1,
+      "unit": "px",
+      "label": "Grosor del borde de los campos",
+      "default": 0
     },
     {
       "type": "select",
@@ -740,7 +830,35 @@
       "type": "checkbox",
       "id": "button_arrow",
       "label": "Mostrar la flecha",
-      "default": true
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "button_uppercase",
+      "label": "Texto en mayúsculas",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "button_weight",
+      "label": "Grosor del texto",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medio" },
+        { "value": "600", "label": "Seminegrita" },
+        { "value": "700", "label": "Negrita" }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "range",
+      "id": "button_padding_x",
+      "min": 14,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Relleno horizontal",
+      "default": 30
     },
     {
       "type": "checkbox",
@@ -756,27 +874,27 @@
       "step": 1,
       "unit": "px",
       "label": "Alto del botón",
-      "default": 14
+      "default": 13
     },
     {
       "type": "range",
       "id": "button_font_size",
       "min": 9,
-      "max": 18,
+      "max": 20,
       "step": 1,
       "unit": "px",
       "label": "Tamaño del texto del botón",
-      "default": 11
+      "default": 14
     },
     {
       "type": "range",
       "id": "button_radius",
       "min": 0,
-      "max": 24,
+      "max": 40,
       "step": 2,
       "unit": "px",
       "label": "Redondeo del botón",
-      "default": 2
+      "default": 10
     },
     {
       "type": "header",
@@ -867,11 +985,27 @@
       "type": "range",
       "id": "form_padding",
       "min": 12,
-      "max": 60,
+      "max": 72,
       "step": 2,
       "unit": "px",
       "label": "Relleno de la caja del formulario",
-      "default": 32
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "form_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Redondeo del formulario",
+      "default": 20
+    },
+    {
+      "type": "checkbox",
+      "id": "form_border",
+      "label": "Borde alrededor del formulario",
+      "default": false
     },
     {
       "type": "range",
@@ -887,11 +1021,12 @@
       "type": "range",
       "id": "field_radius",
       "min": 0,
-      "max": 20,
+      "max": 40,
       "step": 2,
       "unit": "px",
       "label": "Redondeo de los campos",
-      "default": 2
+      "info": "Súbelo a 26 o más para campos con forma de cápsula.",
+      "default": 26
     },
     {
       "type": "range",
@@ -923,13 +1058,31 @@
       "type": "color",
       "id": "form_bg",
       "label": "Fondo del formulario",
-      "default": "#FBFAF8"
+      "default": "#16255A"
+    },
+    {
+      "type": "color",
+      "id": "form_heading_color",
+      "label": "Título del formulario",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "color",
+      "id": "form_label_color",
+      "label": "Etiquetas de los campos",
+      "default": "#C7CEE4"
     },
     {
       "type": "color",
       "id": "field_bg",
       "label": "Fondo de los campos",
-      "default": "#FFFFFF"
+      "default": "#FBFBFC"
+    },
+    {
+      "type": "color",
+      "id": "field_text_color",
+      "label": "Texto escrito en los campos",
+      "default": "#1B1B19"
     },
     {
       "type": "color",
@@ -965,7 +1118,7 @@
       "type": "color",
       "id": "button_bg",
       "label": "Fondo del botón",
-      "default": "#1A4EE0"
+      "default": "#4A8FA8"
     },
     {
       "type": "color",
